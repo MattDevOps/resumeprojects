@@ -1088,6 +1088,110 @@ section {
   .contact-form-row { grid-template-columns: 1fr; }
 }
 
+/* ═══ SCORE GAME (desktop only) ═══ */
+#score-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.score-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(10, 10, 10, 0.85);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(12px);
+  pointer-events: auto;
+  cursor: default;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.score-box.pulse {
+  border-color: var(--green);
+  box-shadow: 0 0 16px rgba(118, 185, 0, 0.15);
+}
+
+.score-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.score-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.score-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--green);
+  min-width: 36px;
+  text-align: right;
+}
+
+.score-bar {
+  width: 100%;
+  height: 3px;
+  background: rgba(118, 185, 0, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--green);
+  border-radius: 2px;
+  transition: width 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.score-rank {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-align: right;
+}
+
+.score-popup {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green);
+  padding: 6px 12px;
+  background: rgba(10, 10, 10, 0.85);
+  border: 1px solid rgba(118, 185, 0, 0.3);
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(8px);
+  white-space: nowrap;
+  animation: scorePopup 1.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes scorePopup {
+  0% { opacity: 0; transform: translateY(10px) scale(0.9); }
+  15% { opacity: 1; transform: translateY(0) scale(1); }
+  70% { opacity: 1; transform: translateY(-10px); }
+  100% { opacity: 0; transform: translateY(-30px); }
+}
+
+@media (max-width: 768px) {
+  #score-widget { display: none !important; }
+}
+
 /* ═══ FOOTER ═══ */
 footer {
   position: relative;
@@ -1824,6 +1928,19 @@ footer {
 </section>
 
 <!-- ═══ FOOTER ═══ -->
+<!-- ═══ SCORE WIDGET ═══ -->
+<div id="score-widget">
+  <div class="score-box" id="scoreBox">
+    <span class="score-icon">⚡</span>
+    <div>
+      <div class="score-label">Explorer XP</div>
+      <div class="score-rank" id="scoreRank">Rank: Lurker</div>
+    </div>
+    <div class="score-value" id="scoreValue">0</div>
+  </div>
+  <div class="score-bar"><div class="score-bar-fill" id="scoreBarFill"></div></div>
+</div>
+
 <footer>
   <div class="footer-inner">
     <div class="footer-links">
@@ -1851,8 +1968,7 @@ footer {
   const ctx = canvas.getContext('2d');
   let particles = [];
   let bursts = [];
-  let mouse = { x: null, y: null, moving: false };
-  let mouseTimer = null;
+  let mouse = { x: null, y: null, px: null, py: null, vx: 0, vy: 0, speed: 0, active: false };
   let w, h;
 
   function resize() {
@@ -1865,41 +1981,50 @@ footer {
 
   canvas.addEventListener('mousemove', e => {
     const rect = canvas.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
-    mouse.moving = true;
-    clearTimeout(mouseTimer);
-    mouseTimer = setTimeout(() => { mouse.moving = false; }, 100);
+    const nx = e.clientX - rect.left;
+    const ny = e.clientY - rect.top;
+    if (mouse.x !== null) {
+      mouse.vx = nx - mouse.x;
+      mouse.vy = ny - mouse.y;
+      mouse.speed = Math.sqrt(mouse.vx * mouse.vx + mouse.vy * mouse.vy);
+    }
+    mouse.px = mouse.x;
+    mouse.py = mouse.y;
+    mouse.x = nx;
+    mouse.y = ny;
+    mouse.active = true;
   });
 
   canvas.addEventListener('mouseleave', () => {
     mouse.x = null;
     mouse.y = null;
-    mouse.moving = false;
+    mouse.speed = 0;
+    mouse.active = false;
   });
 
-  // Click burst
+  // Click burst — scales with mouse speed
   canvas.addEventListener('click', e => {
     const rect = canvas.getBoundingClientRect();
     const cx = e.clientX - rect.left;
     const cy = e.clientY - rect.top;
-    for (let i = 0; i < 12; i++) {
-      const angle = (Math.PI * 2 / 12) * i + (Math.random() - 0.5) * 0.3;
-      const speed = 2 + Math.random() * 2;
+    const count = Math.floor(12 + mouse.speed * 0.5);
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 / count) * i + (Math.random() - 0.5) * 0.4;
+      const speed = 2 + Math.random() * 3 + mouse.speed * 0.15;
       bursts.push({
         x: cx, y: cy,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        r: Math.random() * 2 + 1,
+        vx: Math.cos(angle) * speed + mouse.vx * 0.3,
+        vy: Math.sin(angle) * speed + mouse.vy * 0.3,
+        r: Math.random() * 2.5 + 1,
         life: 1,
-        decay: 0.015 + Math.random() * 0.01
+        decay: 0.012 + Math.random() * 0.008
       });
     }
   });
 
   // Two layers: back (small/dim/slow) and front (larger/bright/normal)
   const backCount = Math.min(60, Math.floor(window.innerWidth / 25));
-  const frontCount = Math.min(80, Math.floor(window.innerWidth / 15));
+  const frontCount = Math.min(90, Math.floor(window.innerWidth / 12));
 
   for (let i = 0; i < backCount; i++) {
     particles.push({
@@ -1916,17 +2041,32 @@ footer {
       x: Math.random() * w, y: Math.random() * h,
       vx: (Math.random() - 0.5) * 0.5,
       vy: (Math.random() - 0.5) * 0.5,
-      r: Math.random() * 1.8 + 0.6,
+      baseR: Math.random() * 1.8 + 0.6,
+      r: 0,
       layer: 1
     });
   }
 
   function lerp(a, b, t) { return a + (b - a) * t; }
+  function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+  // Smoothed mouse speed for effects (decays each frame)
+  let smoothSpeed = 0;
 
   function draw() {
     ctx.clearRect(0, 0, w, h);
 
-    // Back layer first
+    // Smooth the mouse speed so effects feel fluid, not jumpy
+    smoothSpeed = lerp(smoothSpeed, mouse.speed, 0.15);
+    // Decay speed when mouse isn't moving
+    mouse.speed *= 0.9;
+
+    // Interaction radius scales with speed
+    const interactRadius = 120 + smoothSpeed * 4;
+    // Force strength scales with speed
+    const forceMultiplier = 0.02 + smoothSpeed * 0.004;
+
+    // Back layer — also reacts to mouse slightly
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
       if (p.layer !== 0) continue;
@@ -1936,8 +2076,20 @@ footer {
       if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
       if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
 
-      p.vx *= 0.998;
-      p.vy *= 0.998;
+      // Subtle mouse push on back layer
+      if (mouse.x !== null && smoothSpeed > 1) {
+        const dx = p.x - mouse.x;
+        const dy = p.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < interactRadius * 0.6 && dist > 1) {
+          const force = (interactRadius * 0.6 - dist) / (interactRadius * 0.6) * 0.005 * smoothSpeed;
+          p.vx += dx / dist * force;
+          p.vy += dy / dist * force;
+        }
+      }
+
+      p.vx *= 0.997;
+      p.vy *= 0.997;
 
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
@@ -1945,7 +2097,7 @@ footer {
       ctx.fill();
     }
 
-    // Front layer with mouse interaction + connections
+    // Front layer with full mouse interaction + connections
     const front = particles.filter(p => p.layer === 1);
 
     for (let i = 0; i < front.length; i++) {
@@ -1955,48 +2107,78 @@ footer {
       if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
       if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
 
-      // Mouse gravity: attract when still, repel when moving fast
       if (mouse.x !== null) {
-        const dx = mouse.x - p.x;
-        const dy = mouse.y - p.y;
+        const dx = p.x - mouse.x;
+        const dy = p.y - mouse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 200 && dist > 1) {
-          if (mouse.moving) {
-            // Repel when moving
-            const force = (200 - dist) / 200 * 0.025;
-            p.vx -= dx / dist * force;
-            p.vy -= dy / dist * force;
-          } else {
-            // Gently attract when still — form constellation
-            const force = (200 - dist) / 200 * 0.008;
+
+        if (dist < interactRadius && dist > 1) {
+          const proximity = (interactRadius - dist) / interactRadius;
+
+          if (smoothSpeed > 2) {
+            // Moving: repel with force proportional to speed
+            const force = proximity * forceMultiplier;
             p.vx += dx / dist * force;
             p.vy += dy / dist * force;
+
+            // Wake effect: drag particles slightly in mouse direction
+            const wake = proximity * 0.003 * smoothSpeed;
+            p.vx += mouse.vx * wake;
+            p.vy += mouse.vy * wake;
+          } else {
+            // Slow/still: attract gently to form constellation
+            const force = proximity * 0.012;
+            p.vx -= dx / dist * force;
+            p.vy -= dy / dist * force;
+
+            // Slight orbit when close and still
+            if (dist < 80) {
+              p.vx += -dy / dist * 0.003;
+              p.vy += dx / dist * 0.003;
+            }
           }
         }
       }
 
-      p.vx *= 0.985;
-      p.vy *= 0.985;
+      // Damping — less when mouse is fast so particles carry momentum
+      const damp = smoothSpeed > 5 ? 0.992 : 0.985;
+      p.vx *= damp;
+      p.vy *= damp;
+
+      // Particle size pulses near cursor
+      let sizeBoost = 1;
+      if (mouse.x !== null) {
+        const dx = p.x - mouse.x;
+        const dy = p.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < interactRadius) {
+          sizeBoost = 1 + (1 - dist / interactRadius) * 0.6 * (1 + smoothSpeed * 0.03);
+        }
+      }
+      p.r = p.baseR * sizeBoost;
 
       // Color gradient: green at top → cyan at bottom
       const t = p.y / h;
-      const r = Math.round(lerp(118, 0, t));
-      const g = Math.round(lerp(185, 212, t));
-      const b = Math.round(lerp(0, 170, t));
+      const cr = Math.round(lerp(118, 0, t));
+      const cg = Math.round(lerp(185, 212, t));
+      const cb = Math.round(lerp(0, 170, t));
+
+      // Brightness boost near cursor
+      const alpha = clamp(0.35 + (sizeBoost - 1) * 0.4, 0.35, 0.7);
 
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.4)`;
+      ctx.fillStyle = `rgba(${cr}, ${cg}, ${cb}, ${alpha})`;
       ctx.fill();
 
-      // Connections
+      // Connections between particles
       for (let j = i + 1; j < front.length; j++) {
         const p2 = front[j];
         const dx = p.x - p2.x;
         const dy = p.y - p2.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < 130) {
-          const alpha = 0.07 * (1 - dist / 130);
+          const lineAlpha = 0.07 * (1 - dist / 130);
           const mt = (p.y + p2.y) / 2 / h;
           const mr = Math.round(lerp(118, 0, mt));
           const mg = Math.round(lerp(185, 212, mt));
@@ -2004,23 +2186,24 @@ footer {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(p2.x, p2.y);
-          ctx.strokeStyle = `rgba(${mr}, ${mg}, ${mb}, ${alpha})`;
+          ctx.strokeStyle = `rgba(${mr}, ${mg}, ${mb}, ${lineAlpha})`;
           ctx.lineWidth = 0.5;
           ctx.stroke();
         }
       }
 
-      // Connections to mouse cursor (constellation effect)
-      if (mouse.x !== null && !mouse.moving) {
+      // Lines to cursor — visible when slow, fade when fast
+      if (mouse.x !== null && smoothSpeed < 4) {
         const dx = p.x - mouse.x;
         const dy = p.y - mouse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < 150) {
-          const alpha = 0.12 * (1 - dist / 150);
+          const fade = 1 - smoothSpeed / 4;
+          const lineAlpha = 0.15 * (1 - dist / 150) * fade;
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `rgba(118, 185, 0, ${alpha})`;
+          ctx.strokeStyle = `rgba(118, 185, 0, ${lineAlpha})`;
           ctx.lineWidth = 0.6;
           ctx.stroke();
         }
@@ -2047,13 +2230,15 @@ footer {
       ctx.fill();
     }
 
-    // Cursor glow when still
-    if (mouse.x !== null && !mouse.moving) {
-      const grd = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 80);
-      grd.addColorStop(0, 'rgba(118, 185, 0, 0.06)');
+    // Cursor glow — scales with speed
+    if (mouse.x !== null) {
+      const glowRadius = 60 + smoothSpeed * 3;
+      const glowAlpha = clamp(0.04 + smoothSpeed * 0.005, 0.04, 0.12);
+      const grd = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, glowRadius);
+      grd.addColorStop(0, `rgba(118, 185, 0, ${glowAlpha})`);
       grd.addColorStop(1, 'rgba(118, 185, 0, 0)');
       ctx.beginPath();
-      ctx.arc(mouse.x, mouse.y, 80, 0, Math.PI * 2);
+      ctx.arc(mouse.x, mouse.y, glowRadius, 0, Math.PI * 2);
       ctx.fillStyle = grd;
       ctx.fill();
     }
@@ -2258,6 +2443,7 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
       status.textContent = 'Thanks — I\'ll get back to you soon.';
       status.className = 'contact-form-status success';
       form.reset();
+      if (window.gameScore) window.gameScore('message');
     } else {
       const data = await res.json().catch(() => ({}));
       throw new Error(data.error || 'Something went wrong');
@@ -2270,6 +2456,143 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
     btn.textContent = 'Send Message';
   }
 });
+
+// ═══ EXPLORER XP GAME (desktop only) ═══
+(function() {
+  if (window.innerWidth <= 768) return;
+
+  const widget = document.getElementById('score-widget');
+  const scoreEl = document.getElementById('scoreValue');
+  const rankEl = document.getElementById('scoreRank');
+  const barFill = document.getElementById('scoreBarFill');
+  const box = document.getElementById('scoreBox');
+
+  let score = 0;
+  let displayScore = 0;
+  const awarded = new Set();
+
+  const ranks = [
+    { min: 0,   name: 'Lurker',        max: 50 },
+    { min: 50,  name: 'Curious',       max: 150 },
+    { min: 150, name: 'Explorer',      max: 300 },
+    { min: 300, name: 'Invested',      max: 500 },
+    { min: 500, name: 'Engaged',       max: 750 },
+    { min: 750, name: 'Superfan',      max: 1000 },
+    { min: 1000, name: 'VIP',          max: 1000 }
+  ];
+
+  function getRank() {
+    for (let i = ranks.length - 1; i >= 0; i--) {
+      if (score >= ranks[i].min) return ranks[i];
+    }
+    return ranks[0];
+  }
+
+  function popup(text, points) {
+    const el = document.createElement('div');
+    el.className = 'score-popup';
+    el.textContent = `+${points}  ${text}`;
+    widget.insertBefore(el, widget.firstChild);
+    setTimeout(() => el.remove(), 1900);
+  }
+
+  function pulse() {
+    box.classList.add('pulse');
+    setTimeout(() => box.classList.remove('pulse'), 600);
+  }
+
+  function animateScore() {
+    if (displayScore < score) {
+      displayScore += Math.max(1, Math.ceil((score - displayScore) * 0.15));
+      if (displayScore > score) displayScore = score;
+      scoreEl.textContent = displayScore;
+    }
+    const rank = getRank();
+    rankEl.textContent = 'Rank: ' + rank.name;
+    const progress = rank.max > rank.min
+      ? (Math.min(score, rank.max) - rank.min) / (rank.max - rank.min) * 100
+      : 100;
+    barFill.style.width = progress + '%';
+    requestAnimationFrame(animateScore);
+  }
+  requestAnimationFrame(animateScore);
+
+  function award(id, points, text) {
+    if (awarded.has(id)) return;
+    awarded.add(id);
+    score += points;
+    popup(text, points);
+    pulse();
+  }
+
+  // Section scroll scoring
+  const sections = [
+    { id: 'about',      points: 15, text: 'Read the bio' },
+    { id: 'experience', points: 20, text: 'Checked experience' },
+    { id: 'projects',   points: 25, text: 'Viewed projects' },
+    { id: 'stack',      points: 15, text: 'Saw the stack' },
+    { id: 'ai-section', points: 20, text: 'AI philosophy' },
+    { id: 'contact',    points: 50, text: 'Reached contact!' }
+  ];
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const s = sections.find(s => s.id === entry.target.id);
+      if (s) award('section-' + s.id, s.points, s.text);
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(s => {
+    const el = document.getElementById(s.id);
+    if (el) sectionObserver.observe(el);
+  });
+
+  // Project card clicks
+  document.querySelectorAll('.project-card').forEach((card, i) => {
+    card.addEventListener('click', () => {
+      award('project-click-' + i, 10, 'Explored a project');
+    });
+  });
+
+  // Contact item clicks (email, phone, github, linkedin)
+  document.querySelectorAll('#contact .contact-item').forEach((item, i) => {
+    item.addEventListener('click', () => {
+      award('contact-item-' + i, 30, 'Used contact info');
+    });
+  });
+
+  // Time on site bonuses
+  setTimeout(() => award('time-30', 15, '30s on site'), 30000);
+  setTimeout(() => award('time-60', 25, '1 min on site'), 60000);
+  setTimeout(() => award('time-180', 50, '3 min deep dive'), 180000);
+
+  // Scroll depth milestones
+  let maxScroll = 0;
+  window.addEventListener('scroll', () => {
+    const pct = (window.scrollY + window.innerHeight) / document.body.scrollHeight * 100;
+    if (pct > maxScroll) maxScroll = pct;
+    if (maxScroll > 25) award('scroll-25', 5, 'Scrolled 25%');
+    if (maxScroll > 50) award('scroll-50', 10, 'Halfway there');
+    if (maxScroll > 75) award('scroll-75', 15, 'Almost done');
+    if (maxScroll > 95) award('scroll-100', 25, 'Saw everything!');
+  });
+
+  // Contact form submission — called from form handler
+  window.gameScore = function(type) {
+    if (type === 'message') {
+      award('message-sent', 200, 'Sent a message!!!');
+    }
+  };
+
+  // Easter egg: click the score widget itself
+  let widgetClicks = 0;
+  box.addEventListener('click', () => {
+    widgetClicks++;
+    if (widgetClicks === 5) award('widget-click', 50, 'Found the easter egg');
+    if (widgetClicks === 15) award('widget-obsessed', 100, 'Okay you really like clicking');
+  });
+})();
 </script>
 
 <script defer src="/_vercel/insights/script.js"></script>
