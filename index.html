@@ -153,6 +153,7 @@ nav.scrolled { background: rgba(5,5,5,0.92); }
   width: 32px;
   height: 32px;
   position: relative;
+  z-index: 110;
 }
 
 .nav-mobile-toggle span {
@@ -168,6 +169,20 @@ nav.scrolled { background: rgba(5,5,5,0.92); }
 .nav-mobile-toggle span:nth-child(1) { top: 10px; }
 .nav-mobile-toggle span:nth-child(2) { top: 15px; }
 .nav-mobile-toggle span:nth-child(3) { top: 20px; }
+
+.nav-mobile-toggle.active span:nth-child(1) {
+  top: 15px;
+  transform: rotate(45deg);
+  background: var(--green);
+}
+.nav-mobile-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+.nav-mobile-toggle.active span:nth-child(3) {
+  top: 15px;
+  transform: rotate(-45deg);
+  background: var(--green);
+}
 
 /* ═══ HERO ═══ */
 #hero {
@@ -1031,6 +1046,7 @@ footer {
   nav { padding: 0 20px; }
   .nav-links { display: none; }
   .nav-mobile-toggle { display: block; }
+  .nav-available { display: none; }
 
   .nav-links.open {
     display: flex;
@@ -1039,11 +1055,26 @@ footer {
     top: 64px;
     left: 0;
     right: 0;
-    background: rgba(5,5,5,0.95);
-    backdrop-filter: blur(20px);
-    padding: 24px;
-    gap: 20px;
+    background: rgba(5,5,5,0.97);
+    backdrop-filter: blur(24px);
+    padding: 32px 24px;
+    gap: 8px;
     border-bottom: 1px solid var(--border);
+    animation: mobileNavIn 0.25s ease-out;
+  }
+
+  .nav-links.open li {
+    padding: 8px 0;
+  }
+
+  .nav-links.open a {
+    font-size: 15px;
+    letter-spacing: 1px;
+  }
+
+  @keyframes mobileNavIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   section { padding: 80px 20px; }
@@ -1808,15 +1839,28 @@ window.addEventListener('scroll', () => {
 });
 
 // ═══ MOBILE NAV ═══
-document.getElementById('navToggle').addEventListener('click', () => {
-  document.getElementById('navLinks').classList.toggle('open');
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+
+navToggle.addEventListener('click', () => {
+  navToggle.classList.toggle('active');
+  navLinks.classList.toggle('open');
 });
 
 // Close mobile nav on link click
 document.querySelectorAll('.nav-links a').forEach(a => {
   a.addEventListener('click', () => {
-    document.getElementById('navLinks').classList.remove('open');
+    navToggle.classList.remove('active');
+    navLinks.classList.remove('open');
   });
+});
+
+// Close mobile nav on outside tap
+document.addEventListener('click', (e) => {
+  if (navLinks.classList.contains('open') && !e.target.closest('nav')) {
+    navToggle.classList.remove('active');
+    navLinks.classList.remove('open');
+  }
 });
 
 // ═══ CAROUSELS ═══
