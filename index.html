@@ -2672,7 +2672,7 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
 
   const CELLS = 20;
   const GRID = size / CELLS;
-  let snake, dir, nextDir, food, score, best, running, gameOver, speed, loop;
+  let snake, dir, dirQueue, food, score, best, running, gameOver, speed, lastTick, raf;
 
   best = parseInt(localStorage.getItem('snakeBest') || '0');
   bestEl.textContent = best;
@@ -2681,11 +2681,12 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
     const mid = Math.floor(CELLS / 2);
     snake = [{ x: mid, y: mid }, { x: mid - 1, y: mid }, { x: mid - 2, y: mid }];
     dir = { x: 1, y: 0 };
-    nextDir = { x: 1, y: 0 };
+    dirQueue = [];
     score = 0;
-    speed = isMobile ? 130 : 110;
+    speed = isMobile ? 120 : 100;
     gameOver = false;
     running = false;
+    lastTick = 0;
     scoreEl.textContent = '0';
     placeFood();
   }
@@ -2758,59 +2759,85 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
     }
   }
 
-  function step() {
+  function gameLoop(timestamp) {
     if (!running) return;
 
-    dir = nextDir;
-    const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+    if (timestamp - lastTick >= speed) {
+      lastTick = timestamp;
 
-    if (head.x < 0) head.x = CELLS - 1;
-    if (head.x >= CELLS) head.x = 0;
-    if (head.y < 0) head.y = CELLS - 1;
-    if (head.y >= CELLS) head.y = 0;
-
-    if (snake.some(s => s.x === head.x && s.y === head.y)) {
-      running = false;
-      gameOver = true;
-      if (score > best) {
-        best = score;
-        bestEl.textContent = best;
-        localStorage.setItem('snakeBest', best);
+      // Process one queued direction per tick
+      while (dirQueue.length > 0) {
+        const next = dirQueue.shift();
+        // Only apply if it's not reversing into ourselves
+        if (next.x !== -dir.x || next.y !== -dir.y) {
+          dir = next;
+          break;
+        }
       }
-      if (window.gameScore) window.gameScore('snake');
+
+      const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+
+      if (head.x < 0) head.x = CELLS - 1;
+      if (head.x >= CELLS) head.x = 0;
+      if (head.y < 0) head.y = CELLS - 1;
+      if (head.y >= CELLS) head.y = 0;
+
+      if (snake.some(s => s.x === head.x && s.y === head.y)) {
+        running = false;
+        gameOver = true;
+        if (score > best) {
+          best = score;
+          bestEl.textContent = best;
+          localStorage.setItem('snakeBest', best);
+        }
+        if (window.gameScore) window.gameScore('snake');
+        draw();
+        return;
+      }
+
+      snake.unshift(head);
+
+      if (head.x === food.x && head.y === food.y) {
+        score++;
+        scoreEl.textContent = score;
+        placeFood();
+        speed = Math.max(isMobile ? 65 : 50, speed - 1.2);
+      } else {
+        snake.pop();
+      }
+
       draw();
-      return;
     }
 
-    snake.unshift(head);
-
-    if (head.x === food.x && head.y === food.y) {
-      score++;
-      scoreEl.textContent = score;
-      placeFood();
-      speed = Math.max(isMobile ? 70 : 55, speed - 1.5);
-    } else {
-      snake.pop();
-    }
-
-    draw();
-    loop = setTimeout(step, speed);
+    raf = requestAnimationFrame(gameLoop);
   }
 
   function startGame() {
     if (gameOver) reset();
     running = true;
     gameOver = false;
-    step();
+    dirQueue = [];
+    lastTick = performance.now();
+    raf = requestAnimationFrame(gameLoop);
+  }
+
+  function queueDir(newDir) {
+    // Use the last queued direction (or current dir) to validate
+    const ref = dirQueue.length > 0 ? dirQueue[dirQueue.length - 1] : dir;
+    if (newDir.x === -ref.x && newDir.y === -ref.y) return; // can't reverse
+    if (newDir.x === ref.x && newDir.y === ref.y) return; // same direction
+    dirQueue.push(newDir);
+    // Cap queue at 3 to prevent input flooding
+    if (dirQueue.length > 3) dirQueue.shift();
   }
 
   function changeDir(direction) {
     if (!running) { startGame(); return; }
     switch (direction) {
-      case 'up':    if (dir.y !== 1) nextDir = { x: 0, y: -1 }; break;
-      case 'down':  if (dir.y !== -1) nextDir = { x: 0, y: 1 }; break;
-      case 'left':  if (dir.x !== 1) nextDir = { x: -1, y: 0 }; break;
-      case 'right': if (dir.x !== -1) nextDir = { x: 1, y: 0 }; break;
+      case 'up':    queueDir({ x: 0, y: -1 }); break;
+      case 'down':  queueDir({ x: 0, y: 1 }); break;
+      case 'left':  queueDir({ x: -1, y: 0 }); break;
+      case 'right': queueDir({ x: 1, y: 0 }); break;
     }
   }
 
@@ -2875,7 +2902,7 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
   function closeGame() {
     overlay.classList.remove('open');
     running = false;
-    clearTimeout(loop);
+    cancelAnimationFrame(raf);
     document.removeEventListener('keydown', handleKey);
   }
 
