@@ -891,7 +891,21 @@ section {
 
 /* ═══ CONTACT ═══ */
 #contact {
+  position: relative;
   border-top: 1px solid var(--border);
+  overflow: hidden;
+}
+
+#contact-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#contact .section-container {
+  position: relative;
+  z-index: 1;
 }
 
 .contact-grid {
@@ -1707,6 +1721,7 @@ footer {
 
 <!-- ═══ CONTACT ═══ -->
 <section id="contact">
+  <canvas id="contact-canvas"></canvas>
   <div class="section-container">
     <div class="reveal">
       <div class="section-label">// Contact</div>
@@ -1835,7 +1850,9 @@ footer {
   const canvas = document.getElementById('particle-canvas');
   const ctx = canvas.getContext('2d');
   let particles = [];
-  let mouse = { x: null, y: null };
+  let bursts = [];
+  let mouse = { x: null, y: null, moving: false };
+  let mouseTimer = null;
   let w, h;
 
   function resize() {
@@ -1850,71 +1867,266 @@ footer {
     const rect = canvas.getBoundingClientRect();
     mouse.x = e.clientX - rect.left;
     mouse.y = e.clientY - rect.top;
+    mouse.moving = true;
+    clearTimeout(mouseTimer);
+    mouseTimer = setTimeout(() => { mouse.moving = false; }, 100);
   });
 
   canvas.addEventListener('mouseleave', () => {
     mouse.x = null;
     mouse.y = null;
+    mouse.moving = false;
   });
 
-  const count = Math.min(120, Math.floor(window.innerWidth / 12));
+  // Click burst
+  canvas.addEventListener('click', e => {
+    const rect = canvas.getBoundingClientRect();
+    const cx = e.clientX - rect.left;
+    const cy = e.clientY - rect.top;
+    for (let i = 0; i < 12; i++) {
+      const angle = (Math.PI * 2 / 12) * i + (Math.random() - 0.5) * 0.3;
+      const speed = 2 + Math.random() * 2;
+      bursts.push({
+        x: cx, y: cy,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        r: Math.random() * 2 + 1,
+        life: 1,
+        decay: 0.015 + Math.random() * 0.01
+      });
+    }
+  });
 
-  for (let i = 0; i < count; i++) {
+  // Two layers: back (small/dim/slow) and front (larger/bright/normal)
+  const backCount = Math.min(60, Math.floor(window.innerWidth / 25));
+  const frontCount = Math.min(80, Math.floor(window.innerWidth / 15));
+
+  for (let i = 0; i < backCount; i++) {
     particles.push({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-      r: Math.random() * 1.5 + 0.5,
+      x: Math.random() * w, y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.15,
+      vy: (Math.random() - 0.5) * 0.15,
+      r: Math.random() * 0.8 + 0.3,
+      layer: 0
     });
   }
 
+  for (let i = 0; i < frontCount; i++) {
+    particles.push({
+      x: Math.random() * w, y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      r: Math.random() * 1.8 + 0.6,
+      layer: 1
+    });
+  }
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
   function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    // Back layer first
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      if (p.layer !== 0) continue;
+
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+      if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+
+      p.vx *= 0.998;
+      p.vy *= 0.998;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(118, 185, 0, 0.12)';
+      ctx.fill();
+    }
+
+    // Front layer with mouse interaction + connections
+    const front = particles.filter(p => p.layer === 1);
+
+    for (let i = 0; i < front.length; i++) {
+      const p = front[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+      if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+
+      // Mouse gravity: attract when still, repel when moving fast
+      if (mouse.x !== null) {
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 200 && dist > 1) {
+          if (mouse.moving) {
+            // Repel when moving
+            const force = (200 - dist) / 200 * 0.025;
+            p.vx -= dx / dist * force;
+            p.vy -= dy / dist * force;
+          } else {
+            // Gently attract when still — form constellation
+            const force = (200 - dist) / 200 * 0.008;
+            p.vx += dx / dist * force;
+            p.vy += dy / dist * force;
+          }
+        }
+      }
+
+      p.vx *= 0.985;
+      p.vy *= 0.985;
+
+      // Color gradient: green at top → cyan at bottom
+      const t = p.y / h;
+      const r = Math.round(lerp(118, 0, t));
+      const g = Math.round(lerp(185, 212, t));
+      const b = Math.round(lerp(0, 170, t));
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.4)`;
+      ctx.fill();
+
+      // Connections
+      for (let j = i + 1; j < front.length; j++) {
+        const p2 = front[j];
+        const dx = p.x - p2.x;
+        const dy = p.y - p2.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 130) {
+          const alpha = 0.07 * (1 - dist / 130);
+          const mt = (p.y + p2.y) / 2 / h;
+          const mr = Math.round(lerp(118, 0, mt));
+          const mg = Math.round(lerp(185, 212, mt));
+          const mb = Math.round(lerp(0, 170, mt));
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = `rgba(${mr}, ${mg}, ${mb}, ${alpha})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+
+      // Connections to mouse cursor (constellation effect)
+      if (mouse.x !== null && !mouse.moving) {
+        const dx = p.x - mouse.x;
+        const dy = p.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 150) {
+          const alpha = 0.12 * (1 - dist / 150);
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = `rgba(118, 185, 0, ${alpha})`;
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Burst particles
+    for (let i = bursts.length - 1; i >= 0; i--) {
+      const b = bursts[i];
+      b.x += b.vx;
+      b.y += b.vy;
+      b.vx *= 0.96;
+      b.vy *= 0.96;
+      b.life -= b.decay;
+
+      if (b.life <= 0) {
+        bursts.splice(i, 1);
+        continue;
+      }
+
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.r * b.life, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(118, 185, 0, ${b.life * 0.6})`;
+      ctx.fill();
+    }
+
+    // Cursor glow when still
+    if (mouse.x !== null && !mouse.moving) {
+      const grd = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 80);
+      grd.addColorStop(0, 'rgba(118, 185, 0, 0.06)');
+      grd.addColorStop(1, 'rgba(118, 185, 0, 0)');
+      ctx.beginPath();
+      ctx.arc(mouse.x, mouse.y, 80, 0, Math.PI * 2);
+      ctx.fillStyle = grd;
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+})();
+
+// ═══ CONTACT PARTICLE FIELD ═══
+(function() {
+  const section = document.getElementById('contact');
+  const canvas = document.getElementById('contact-canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let w, h;
+  let active = false;
+
+  function resize() {
+    w = canvas.width = section.offsetWidth;
+    h = canvas.height = section.offsetHeight;
+  }
+
+  const obs = new IntersectionObserver(entries => {
+    active = entries[0].isIntersecting;
+    if (active && particles.length === 0) init();
+  }, { threshold: 0.05 });
+  obs.observe(section);
+
+  function init() {
+    resize();
+    window.addEventListener('resize', resize);
+    const count = Math.min(50, Math.floor(window.innerWidth / 30));
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * w, y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: (Math.random() - 0.5) * 0.2,
+        r: Math.random() * 1.2 + 0.3
+      });
+    }
+    draw();
+  }
+
+  function draw() {
+    if (!active) { requestAnimationFrame(draw); return; }
+
     ctx.clearRect(0, 0, w, h);
 
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
       p.x += p.vx;
       p.y += p.vy;
-
-      if (p.x < 0) p.x = w;
-      if (p.x > w) p.x = 0;
-      if (p.y < 0) p.y = h;
-      if (p.y > h) p.y = 0;
-
-      // Mouse repulsion
-      if (mouse.x !== null) {
-        const dx = p.x - mouse.x;
-        const dy = p.y - mouse.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 150) {
-          const force = (150 - dist) / 150 * 0.02;
-          p.vx += dx * force;
-          p.vy += dy * force;
-        }
-      }
-
-      // Dampen velocity
-      p.vx *= 0.99;
-      p.vy *= 0.99;
+      if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+      if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
 
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(118, 185, 0, 0.35)';
+      ctx.fillStyle = 'rgba(118, 185, 0, 0.15)';
       ctx.fill();
 
-      // Draw connections
       for (let j = i + 1; j < particles.length; j++) {
         const p2 = particles[j];
         const dx = p.x - p2.x;
         const dy = p.y - p2.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 120) {
+        if (dist < 140) {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(p2.x, p2.y);
-          ctx.strokeStyle = `rgba(118, 185, 0, ${0.06 * (1 - dist / 120)})`;
-          ctx.lineWidth = 0.5;
+          ctx.strokeStyle = `rgba(118, 185, 0, ${0.04 * (1 - dist / 140)})`;
+          ctx.lineWidth = 0.4;
           ctx.stroke();
         }
       }
@@ -1922,8 +2134,6 @@ footer {
 
     requestAnimationFrame(draw);
   }
-
-  draw();
 })();
 
 // ═══ SCROLL REVEAL ═══
@@ -2061,6 +2271,8 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
   }
 });
 </script>
+
+<script defer src="/_vercel/insights/script.js"></script>
 
 </body>
 </html>

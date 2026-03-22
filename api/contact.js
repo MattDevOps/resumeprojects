@@ -1,8 +1,8 @@
-import { Resend } from 'resend';
+const { Resend } = require('resend');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -13,7 +13,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Name, email, and message are required' });
   }
 
-  // Basic email validation
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return res.status(400).json({ error: 'Invalid email address' });
   }
@@ -42,7 +41,7 @@ export default async function handler(req, res) {
     console.error('Resend error:', error);
     return res.status(500).json({ error: 'Failed to send email' });
   }
-}
+};
 
 function escapeHtml(str) {
   return str
