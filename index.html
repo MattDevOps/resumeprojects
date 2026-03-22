@@ -964,8 +964,114 @@ section {
   color: var(--text);
 }
 
+/* ═══ CONTACT FORM ═══ */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.contact-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.contact-form-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.contact-form-input,
+.contact-form-textarea {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  transition: border-color 0.3s, background 0.3s;
+  outline: none;
+}
+
+.contact-form-input:focus,
+.contact-form-textarea:focus {
+  border-color: var(--green);
+  background: var(--bg-card-hover);
+}
+
+.contact-form-input::placeholder,
+.contact-form-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.contact-form-textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+.contact-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.contact-form-submit {
+  padding: 14px 32px;
+  border: 1px solid var(--green);
+  border-radius: var(--radius-sm);
+  background: rgba(118,185,0,0.08);
+  color: var(--green);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 8px;
+}
+
+.contact-form-submit:hover {
+  background: rgba(118,185,0,0.15);
+  box-shadow: 0 0 20px rgba(118,185,0,0.1);
+}
+
+.contact-form-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.contact-form-status {
+  font-size: 14px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  display: none;
+}
+
+.contact-form-status.success {
+  display: block;
+  color: var(--green);
+  background: rgba(118,185,0,0.08);
+  border: 1px solid rgba(118,185,0,0.2);
+}
+
+.contact-form-status.error {
+  display: block;
+  color: #ff6b6b;
+  background: rgba(255,107,107,0.08);
+  border: 1px solid rgba(255,107,107,0.2);
+}
+
 @media (max-width: 768px) {
   .contact-grid { grid-template-columns: 1fr; gap: 32px; }
+  .contact-form-row { grid-template-columns: 1fr; }
 }
 
 /* ═══ FOOTER ═══ */
@@ -1610,6 +1716,28 @@ footer {
     <div class="contact-grid">
       <div class="reveal reveal-delay-1">
         <p class="contact-text">I'm based in Jerusalem but I've worked US hours for years (Sonos was Boston). Happy to work remote, hybrid, or relocate for the right opportunity. If you're building something real, let's talk.</p>
+        <form class="contact-form" id="contactForm">
+          <div class="contact-form-row">
+            <div class="contact-form-group">
+              <label class="contact-form-label" for="contact-name">Name</label>
+              <input class="contact-form-input" type="text" id="contact-name" name="name" placeholder="Your name" required>
+            </div>
+            <div class="contact-form-group">
+              <label class="contact-form-label" for="contact-email">Email</label>
+              <input class="contact-form-input" type="email" id="contact-email" name="email" placeholder="your@email.com" required>
+            </div>
+          </div>
+          <div class="contact-form-group">
+            <label class="contact-form-label" for="contact-subject">Subject</label>
+            <input class="contact-form-input" type="text" id="contact-subject" name="subject" placeholder="What's this about?">
+          </div>
+          <div class="contact-form-group">
+            <label class="contact-form-label" for="contact-message">Message</label>
+            <textarea class="contact-form-textarea" id="contact-message" name="message" placeholder="Your message..." required></textarea>
+          </div>
+          <button type="submit" class="contact-form-submit" id="contactSubmit">Send Message</button>
+          <div class="contact-form-status" id="contactStatus"></div>
+        </form>
       </div>
       <div class="contact-items reveal reveal-delay-2">
         <a href="mailto:matthew.hasson93@gmail.com" class="contact-item">
@@ -1891,6 +2019,46 @@ document.querySelectorAll('[data-carousel]').forEach(carousel => {
   carousel.addEventListener('mouseleave', () => {
     timer = setInterval(() => goTo(current + 1), 5000);
   });
+});
+
+// ═══ CONTACT FORM ═══
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('contactSubmit');
+  const status = document.getElementById('contactStatus');
+  const form = e.target;
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  status.className = 'contact-form-status';
+
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: form.name.value,
+        email: form.email.value,
+        subject: form.subject.value,
+        message: form.message.value
+      })
+    });
+
+    if (res.ok) {
+      status.textContent = 'Message sent — I\'ll get back to you soon.';
+      status.className = 'contact-form-status success';
+      form.reset();
+    } else {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || 'Something went wrong');
+    }
+  } catch (err) {
+    status.textContent = err.message || 'Failed to send. Try emailing me directly.';
+    status.className = 'contact-form-status error';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Send Message';
+  }
 });
 </script>
 
