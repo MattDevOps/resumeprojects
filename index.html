@@ -2928,10 +2928,10 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
   const awarded = new Set();
 
   const ranks = [
-    { min: 0,   name: 'Pretty Cool',    max: 150 },
-    { min: 150, name: 'Very Cool',       max: 400 },
-    { min: 400, name: 'Mega Cool',       max: 700 },
-    { min: 700, name: '2cool4school',    max: 1000 }
+    { min: 0,   name: 'Pretty Cool',    max: 100 },
+    { min: 100, name: 'Very Cool',       max: 300 },
+    { min: 300, name: 'Mega Cool',       max: 600 },
+    { min: 600, name: '2cool4school',    max: 1000 }
   ];
 
   function getRank() {
@@ -3034,7 +3034,10 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
   // External score hooks
   window.gameScore = function(type) {
     if (type === 'message') {
-      award('message-sent', 200, 'Sent a message!!!');
+      score = 1000;
+      awarded.add('message-sent');
+      popup('Max coolness unlocked!', '★');
+      pulse();
     }
     if (type === 'snake') {
       award('snake-played', 30, 'Played Snake');
