@@ -1117,7 +1117,10 @@ section {
 }
 
 @media (max-width: 768px) {
-  .snake-trigger { display: none; }
+  .snake-trigger { bottom: 16px; left: 16px; }
+  .snake-modal { padding: 16px; gap: 12px; }
+  .snake-instructions { display: none; }
+  .snake-touch-controls { display: grid !important; }
 }
 
 .snake-overlay {
@@ -1221,6 +1224,41 @@ section {
   pointer-events: none;
   line-height: 2;
   letter-spacing: 0.5px;
+}
+
+.snake-touch-controls {
+  display: none;
+  grid-template-columns: repeat(3, 56px);
+  grid-template-rows: repeat(3, 56px);
+  gap: 4px;
+  justify-content: center;
+}
+
+.snake-touch-btn {
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(118, 185, 0, 0.06);
+  color: var(--green);
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.snake-touch-btn:active {
+  background: rgba(118, 185, 0, 0.2);
+  border-color: var(--green);
+}
+
+.snake-touch-spacer {
+  width: 56px;
+  height: 56px;
 }
 
 /* ═══ SCORE GAME (desktop only) ═══ */
@@ -2074,6 +2112,14 @@ footer {
     </div>
     <canvas id="snake-canvas" width="400" height="400"></canvas>
     <div class="snake-instructions">WASD / Arrow Keys to move · ESC to close</div>
+    <div class="snake-touch-controls">
+      <div class="snake-touch-spacer"></div>
+      <button class="snake-touch-btn" data-dir="up">▲</button>
+      <div class="snake-touch-spacer"></div>
+      <button class="snake-touch-btn" data-dir="left">◀</button>
+      <button class="snake-touch-btn" data-dir="down">▼</button>
+      <button class="snake-touch-btn" data-dir="right">▶</button>
+    </div>
   </div>
 </div>
 
@@ -2608,8 +2654,6 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
 
 // ═══ SNAKE GAME ═══
 (function() {
-  if (window.innerWidth <= 768) return;
-
   const trigger = document.getElementById('snakeTrigger');
   const overlay = document.getElementById('snakeOverlay');
   const closeBtn = document.getElementById('snakeClose');
@@ -2617,9 +2661,17 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
   const ctx = canvas.getContext('2d');
   const scoreEl = document.getElementById('snakeScore');
   const bestEl = document.getElementById('snakeBest');
+  const isMobile = window.innerWidth <= 768;
 
-  const GRID = 20;
-  const CELLS = canvas.width / GRID;
+  // Responsive canvas — 400 on desktop, fit screen on mobile
+  const size = isMobile ? Math.min(window.innerWidth - 48, 320) : 400;
+  canvas.width = size;
+  canvas.height = size;
+  canvas.style.width = size + 'px';
+  canvas.style.height = size + 'px';
+
+  const CELLS = 20;
+  const GRID = size / CELLS;
   let snake, dir, nextDir, food, score, best, running, gameOver, speed, loop;
 
   best = parseInt(localStorage.getItem('snakeBest') || '0');
@@ -2631,7 +2683,7 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
     dir = { x: 1, y: 0 };
     nextDir = { x: 1, y: 0 };
     score = 0;
-    speed = 110;
+    speed = isMobile ? 130 : 110;
     gameOver = false;
     running = false;
     scoreEl.textContent = '0';
@@ -2660,11 +2712,9 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
   }
 
   function draw() {
-    // Background
     ctx.fillStyle = '#0a0a0a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Grid lines
     ctx.strokeStyle = 'rgba(118, 185, 0, 0.04)';
     ctx.lineWidth = 0.5;
     for (let i = 0; i <= CELLS; i++) {
@@ -2678,10 +2728,8 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
       ctx.stroke();
     }
 
-    // Food
     drawCell(food.x, food.y, '#00d4aa', 'rgba(0, 212, 170, 0.5)');
 
-    // Snake
     snake.forEach((seg, i) => {
       const t = i / snake.length;
       const r = Math.round(118 - t * 60);
@@ -2690,20 +2738,20 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
       drawCell(seg.x, seg.y, `rgb(${r}, ${g}, 0)`, glow);
     });
 
-    // Start / game over message
     if (!running) {
       ctx.fillStyle = 'rgba(5, 5, 5, 0.7)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.font = '600 14px "JetBrains Mono", monospace';
+      const fontSize = isMobile ? 12 : 14;
+      ctx.font = `600 ${fontSize}px "JetBrains Mono", monospace`;
       ctx.textAlign = 'center';
       ctx.fillStyle = '#76B900';
       if (gameOver) {
         ctx.fillText('Game Over — Score: ' + score, canvas.width / 2, canvas.height / 2 - 12);
-        ctx.font = '11px "JetBrains Mono", monospace';
+        ctx.font = `${isMobile ? 10 : 11}px "JetBrains Mono", monospace`;
         ctx.fillStyle = '#888';
-        ctx.fillText('Press any key to restart', canvas.width / 2, canvas.height / 2 + 16);
+        ctx.fillText(isMobile ? 'Tap ▲ to restart' : 'Press any key to restart', canvas.width / 2, canvas.height / 2 + 16);
       } else {
-        ctx.fillText('Press any key to start', canvas.width / 2, canvas.height / 2);
+        ctx.fillText(isMobile ? 'Tap ▲ to start' : 'Press any key to start', canvas.width / 2, canvas.height / 2);
       }
     }
   }
@@ -2714,13 +2762,11 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
     dir = nextDir;
     const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
 
-    // Wall collision — wrap
     if (head.x < 0) head.x = CELLS - 1;
     if (head.x >= CELLS) head.x = 0;
     if (head.y < 0) head.y = CELLS - 1;
     if (head.y >= CELLS) head.y = 0;
 
-    // Self collision
     if (snake.some(s => s.x === head.x && s.y === head.y)) {
       running = false;
       gameOver = true;
@@ -2729,7 +2775,6 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
         bestEl.textContent = best;
         localStorage.setItem('snakeBest', best);
       }
-      // Award XP for playing
       if (window.gameScore) window.gameScore('snake');
       draw();
       return;
@@ -2741,8 +2786,7 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
       score++;
       scoreEl.textContent = score;
       placeFood();
-      // Speed up slightly
-      speed = Math.max(55, speed - 1.5);
+      speed = Math.max(isMobile ? 70 : 55, speed - 1.5);
     } else {
       snake.pop();
     }
@@ -2758,36 +2802,65 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
     step();
   }
 
+  function changeDir(direction) {
+    if (!running) { startGame(); return; }
+    switch (direction) {
+      case 'up':    if (dir.y !== 1) nextDir = { x: 0, y: -1 }; break;
+      case 'down':  if (dir.y !== -1) nextDir = { x: 0, y: 1 }; break;
+      case 'left':  if (dir.x !== 1) nextDir = { x: -1, y: 0 }; break;
+      case 'right': if (dir.x !== -1) nextDir = { x: 1, y: 0 }; break;
+    }
+  }
+
   function handleKey(e) {
     if (!overlay.classList.contains('open')) return;
 
-    if (e.key === 'Escape') {
-      closeGame();
-      return;
-    }
-
+    if (e.key === 'Escape') { closeGame(); return; }
     e.preventDefault();
 
-    if (!running) {
-      startGame();
-      return;
-    }
+    if (!running) { startGame(); return; }
 
     switch (e.key) {
-      case 'ArrowUp': case 'w': case 'W':
-        if (dir.y !== 1) nextDir = { x: 0, y: -1 };
-        break;
-      case 'ArrowDown': case 's': case 'S':
-        if (dir.y !== -1) nextDir = { x: 0, y: 1 };
-        break;
-      case 'ArrowLeft': case 'a': case 'A':
-        if (dir.x !== 1) nextDir = { x: -1, y: 0 };
-        break;
-      case 'ArrowRight': case 'd': case 'D':
-        if (dir.x !== -1) nextDir = { x: 1, y: 0 };
-        break;
+      case 'ArrowUp': case 'w': case 'W': changeDir('up'); break;
+      case 'ArrowDown': case 's': case 'S': changeDir('down'); break;
+      case 'ArrowLeft': case 'a': case 'A': changeDir('left'); break;
+      case 'ArrowRight': case 'd': case 'D': changeDir('right'); break;
     }
   }
+
+  // Touch d-pad buttons
+  document.querySelectorAll('.snake-touch-btn').forEach(btn => {
+    btn.addEventListener('touchstart', e => {
+      e.preventDefault();
+      changeDir(btn.dataset.dir);
+    }, { passive: false });
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      changeDir(btn.dataset.dir);
+    });
+  });
+
+  // Swipe detection on canvas
+  let touchStartX = 0, touchStartY = 0;
+  canvas.addEventListener('touchstart', e => {
+    e.preventDefault();
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    if (!running) startGame();
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+    if (Math.max(absDx, absDy) < 20) return; // too small, ignore
+    if (absDx > absDy) {
+      changeDir(dx > 0 ? 'right' : 'left');
+    } else {
+      changeDir(dy > 0 ? 'down' : 'up');
+    }
+  }, { passive: false });
 
   function openGame() {
     overlay.classList.add('open');
@@ -2916,9 +2989,9 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
   });
 
   // Time on site bonuses
-  setTimeout(() => award('time-30', 15, '30s on site'), 30000);
-  setTimeout(() => award('time-60', 25, '1 min on site'), 60000);
-  setTimeout(() => award('time-180', 50, '3 min deep dive'), 180000);
+  setTimeout(() => award('time-30', 15, 'Still here?'), 30000);
+  setTimeout(() => award('time-60', 25, 'Loyal visitor'), 60000);
+  setTimeout(() => award('time-180', 50, 'Dedicated explorer'), 180000);
 
   // Scroll depth milestones
   let maxScroll = 0;
