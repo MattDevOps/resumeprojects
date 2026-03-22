@@ -1088,6 +1088,141 @@ section {
   .contact-form-row { grid-template-columns: 1fr; }
 }
 
+/* ═══ SNAKE GAME ═══ */
+.snake-trigger {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 998;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(12px);
+  color: var(--text-dim);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  line-height: 1;
+}
+
+.snake-trigger:hover {
+  border-color: var(--green);
+  color: var(--green);
+  box-shadow: 0 0 16px rgba(118, 185, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .snake-trigger { display: none; }
+}
+
+.snake-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.snake-overlay.open {
+  display: flex;
+}
+
+.snake-modal {
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+}
+
+.snake-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.snake-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.snake-score-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.snake-score-display span {
+  color: var(--green);
+  font-weight: 600;
+}
+
+.snake-close {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.snake-close:hover {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
+#snake-canvas {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  display: block;
+}
+
+.snake-instructions {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.snake-start-msg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--green);
+  text-align: center;
+  pointer-events: none;
+  line-height: 2;
+  letter-spacing: 0.5px;
+}
+
 /* ═══ SCORE GAME (desktop only) ═══ */
 #score-widget {
   position: fixed;
@@ -1928,6 +2063,20 @@ footer {
 </section>
 
 <!-- ═══ FOOTER ═══ -->
+<!-- ═══ SNAKE GAME ═══ -->
+<button class="snake-trigger" id="snakeTrigger" title="Play Snake">🐍</button>
+<div class="snake-overlay" id="snakeOverlay">
+  <div class="snake-modal">
+    <div class="snake-header">
+      <div class="snake-title">Snake</div>
+      <div class="snake-score-display">Score: <span id="snakeScore">0</span> &nbsp; Best: <span id="snakeBest">0</span></div>
+      <button class="snake-close" id="snakeClose">✕</button>
+    </div>
+    <canvas id="snake-canvas" width="400" height="400"></canvas>
+    <div class="snake-instructions">WASD / Arrow Keys to move · ESC to close</div>
+  </div>
+</div>
+
 <!-- ═══ SCORE WIDGET ═══ -->
 <div id="score-widget">
   <div class="score-box" id="scoreBox">
@@ -2457,6 +2606,210 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
   }
 });
 
+// ═══ SNAKE GAME ═══
+(function() {
+  if (window.innerWidth <= 768) return;
+
+  const trigger = document.getElementById('snakeTrigger');
+  const overlay = document.getElementById('snakeOverlay');
+  const closeBtn = document.getElementById('snakeClose');
+  const canvas = document.getElementById('snake-canvas');
+  const ctx = canvas.getContext('2d');
+  const scoreEl = document.getElementById('snakeScore');
+  const bestEl = document.getElementById('snakeBest');
+
+  const GRID = 20;
+  const CELLS = canvas.width / GRID;
+  let snake, dir, nextDir, food, score, best, running, gameOver, speed, loop;
+
+  best = parseInt(localStorage.getItem('snakeBest') || '0');
+  bestEl.textContent = best;
+
+  function reset() {
+    const mid = Math.floor(CELLS / 2);
+    snake = [{ x: mid, y: mid }, { x: mid - 1, y: mid }, { x: mid - 2, y: mid }];
+    dir = { x: 1, y: 0 };
+    nextDir = { x: 1, y: 0 };
+    score = 0;
+    speed = 110;
+    gameOver = false;
+    running = false;
+    scoreEl.textContent = '0';
+    placeFood();
+  }
+
+  function placeFood() {
+    let pos;
+    do {
+      pos = { x: Math.floor(Math.random() * CELLS), y: Math.floor(Math.random() * CELLS) };
+    } while (snake.some(s => s.x === pos.x && s.y === pos.y));
+    food = pos;
+  }
+
+  function drawCell(x, y, color, glow) {
+    const pad = 1;
+    ctx.fillStyle = color;
+    if (glow) {
+      ctx.shadowColor = glow;
+      ctx.shadowBlur = 8;
+    }
+    ctx.beginPath();
+    ctx.roundRect(x * GRID + pad, y * GRID + pad, GRID - pad * 2, GRID - pad * 2, 3);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  function draw() {
+    // Background
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(118, 185, 0, 0.04)';
+    ctx.lineWidth = 0.5;
+    for (let i = 0; i <= CELLS; i++) {
+      ctx.beginPath();
+      ctx.moveTo(i * GRID, 0);
+      ctx.lineTo(i * GRID, canvas.height);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, i * GRID);
+      ctx.lineTo(canvas.width, i * GRID);
+      ctx.stroke();
+    }
+
+    // Food
+    drawCell(food.x, food.y, '#00d4aa', 'rgba(0, 212, 170, 0.5)');
+
+    // Snake
+    snake.forEach((seg, i) => {
+      const t = i / snake.length;
+      const r = Math.round(118 - t * 60);
+      const g = Math.round(185 - t * 40);
+      const glow = i === 0 ? 'rgba(118, 185, 0, 0.4)' : null;
+      drawCell(seg.x, seg.y, `rgb(${r}, ${g}, 0)`, glow);
+    });
+
+    // Start / game over message
+    if (!running) {
+      ctx.fillStyle = 'rgba(5, 5, 5, 0.7)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = '600 14px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#76B900';
+      if (gameOver) {
+        ctx.fillText('Game Over — Score: ' + score, canvas.width / 2, canvas.height / 2 - 12);
+        ctx.font = '11px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#888';
+        ctx.fillText('Press any key to restart', canvas.width / 2, canvas.height / 2 + 16);
+      } else {
+        ctx.fillText('Press any key to start', canvas.width / 2, canvas.height / 2);
+      }
+    }
+  }
+
+  function step() {
+    if (!running) return;
+
+    dir = nextDir;
+    const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+
+    // Wall collision — wrap
+    if (head.x < 0) head.x = CELLS - 1;
+    if (head.x >= CELLS) head.x = 0;
+    if (head.y < 0) head.y = CELLS - 1;
+    if (head.y >= CELLS) head.y = 0;
+
+    // Self collision
+    if (snake.some(s => s.x === head.x && s.y === head.y)) {
+      running = false;
+      gameOver = true;
+      if (score > best) {
+        best = score;
+        bestEl.textContent = best;
+        localStorage.setItem('snakeBest', best);
+      }
+      // Award XP for playing
+      if (window.gameScore) window.gameScore('snake');
+      draw();
+      return;
+    }
+
+    snake.unshift(head);
+
+    if (head.x === food.x && head.y === food.y) {
+      score++;
+      scoreEl.textContent = score;
+      placeFood();
+      // Speed up slightly
+      speed = Math.max(55, speed - 1.5);
+    } else {
+      snake.pop();
+    }
+
+    draw();
+    loop = setTimeout(step, speed);
+  }
+
+  function startGame() {
+    if (gameOver) reset();
+    running = true;
+    gameOver = false;
+    step();
+  }
+
+  function handleKey(e) {
+    if (!overlay.classList.contains('open')) return;
+
+    if (e.key === 'Escape') {
+      closeGame();
+      return;
+    }
+
+    e.preventDefault();
+
+    if (!running) {
+      startGame();
+      return;
+    }
+
+    switch (e.key) {
+      case 'ArrowUp': case 'w': case 'W':
+        if (dir.y !== 1) nextDir = { x: 0, y: -1 };
+        break;
+      case 'ArrowDown': case 's': case 'S':
+        if (dir.y !== -1) nextDir = { x: 0, y: 1 };
+        break;
+      case 'ArrowLeft': case 'a': case 'A':
+        if (dir.x !== 1) nextDir = { x: -1, y: 0 };
+        break;
+      case 'ArrowRight': case 'd': case 'D':
+        if (dir.x !== -1) nextDir = { x: 1, y: 0 };
+        break;
+    }
+  }
+
+  function openGame() {
+    overlay.classList.add('open');
+    reset();
+    draw();
+    document.addEventListener('keydown', handleKey);
+  }
+
+  function closeGame() {
+    overlay.classList.remove('open');
+    running = false;
+    clearTimeout(loop);
+    document.removeEventListener('keydown', handleKey);
+  }
+
+  trigger.addEventListener('click', openGame);
+  closeBtn.addEventListener('click', closeGame);
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeGame();
+  });
+})();
+
 // ═══ EXPLORER XP GAME (desktop only) ═══
 (function() {
   if (window.innerWidth <= 768) return;
@@ -2578,10 +2931,13 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
     if (maxScroll > 95) award('scroll-100', 25, 'Saw everything!');
   });
 
-  // Contact form submission — called from form handler
+  // External score hooks
   window.gameScore = function(type) {
     if (type === 'message') {
       award('message-sent', 200, 'Sent a message!!!');
+    }
+    if (type === 'snake') {
+      award('snake-played', 30, 'Played Snake');
     }
   };
 
