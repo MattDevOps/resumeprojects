@@ -19,19 +19,38 @@ module.exports = async function handler(req, res) {
 
   try {
     await resend.emails.send({
-      from: 'Contact Form <contact@matthasson.com>',
+      from: 'Matt Hasson Portfolio <contact@matthasson.com>',
       to: 'matthew.hasson93@gmail.com',
       replyTo: email,
-      subject: subject ? `${subject} — from ${name}` : `New message from ${name}`,
-      text: `Name: ${name}\nEmail: ${email}\nSubject: ${subject || '(none)'}\n\n${message}`,
+      subject: subject ? `[matthasson.com] ${subject}` : `[matthasson.com] New message from ${name}`,
+      text: `New contact form submission from matthasson.com\n\nFrom: ${name} (${email})\nSubject: ${subject || '(none)'}\n\n${message}`,
       html: `
-        <div style="font-family: sans-serif; max-width: 600px;">
-          <h2 style="color: #333;">New message from your portfolio</h2>
-          <p><strong>Name:</strong> ${escapeHtml(name)}</p>
-          <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-          <p><strong>Subject:</strong> ${escapeHtml(subject || '(none)')}</p>
-          <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-          <p style="white-space: pre-wrap;">${escapeHtml(message)}</p>
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+          <div style="background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%); padding: 24px 32px; border-radius: 8px 8px 0 0;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 18px; font-weight: 600; letter-spacing: 0.5px;">matthasson.com</h1>
+            <p style="color: #8888aa; margin: 4px 0 0; font-size: 13px;">New contact form submission</p>
+          </div>
+          <div style="padding: 28px 32px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;">
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+              <tr>
+                <td style="padding: 8px 0; color: #6b7280; font-size: 13px; width: 80px; vertical-align: top;">From</td>
+                <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 500;">${escapeHtml(name)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #6b7280; font-size: 13px; vertical-align: top;">Email</td>
+                <td style="padding: 8px 0;"><a href="mailto:${escapeHtml(email)}" style="color: #4f46e5; text-decoration: none; font-size: 14px;">${escapeHtml(email)}</a></td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #6b7280; font-size: 13px; vertical-align: top;">Subject</td>
+                <td style="padding: 8px 0; color: #111827; font-size: 14px;">${escapeHtml(subject || '(none)')}</td>
+              </tr>
+            </table>
+            <div style="border-top: 1px solid #f3f4f6; padding-top: 20px;">
+              <p style="color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 8px;">Message</p>
+              <div style="background: #f9fafb; border-radius: 6px; padding: 16px; white-space: pre-wrap; color: #374151; font-size: 14px; line-height: 1.6;">${escapeHtml(message)}</div>
+            </div>
+          </div>
+          <p style="text-align: center; color: #9ca3af; font-size: 11px; margin-top: 16px;">Sent via contact form on matthasson.com</p>
         </div>
       `
     });
