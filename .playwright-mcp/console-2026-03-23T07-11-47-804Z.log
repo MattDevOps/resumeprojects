@@ -1,0 +1,3 @@
+[     198ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8765/original_latest.json:0
+[     203ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8765/serious_latest.json:0
+[     224ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8765/favicon.ico:0
