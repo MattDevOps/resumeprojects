@@ -479,57 +479,32 @@ section {
   border-top: 1px solid var(--border);
 }
 
-.experience-timeline {
-  margin-top: 64px;
-  position: relative;
-  padding-left: 32px;
+.experience-progression {
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
-.experience-timeline::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: linear-gradient(to bottom, var(--green), var(--border));
-}
-
-.experience-item {
-  position: relative;
+.experience-role-block {
   padding: 32px;
-  margin-bottom: 32px;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
   background: var(--bg-card);
   transition: all 0.3s;
 }
 
-.experience-item:hover {
+.experience-role-block:first-child {
+  border-radius: var(--radius) var(--radius) 0 0;
+  border-bottom: none;
+}
+
+.experience-role-block:last-child {
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+.experience-role-block:hover {
   border-color: var(--border-hover);
   background: var(--bg-card-hover);
-}
-
-.experience-item::before {
-  content: '';
-  position: absolute;
-  left: -40px;
-  top: 40px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 12px var(--green-glow);
-}
-
-.experience-item::after {
-  content: '';
-  position: absolute;
-  left: -32px;
-  top: 44px;
-  width: 24px;
-  height: 1px;
-  background: var(--border);
 }
 
 .experience-dates {
@@ -540,16 +515,10 @@ section {
   margin-bottom: 8px;
 }
 
-.experience-company {
-  font-family: 'Instrument Serif', serif;
-  font-size: 28px;
-  margin-bottom: 4px;
-}
-
 .experience-role {
-  font-size: 15px;
-  color: var(--cyan);
-  font-weight: 500;
+  font-size: 18px;
+  color: var(--text);
+  font-weight: 600;
   margin-bottom: 16px;
 }
 
@@ -1818,13 +1787,13 @@ footer {
   <div class="section-container">
     <div class="reveal">
       <div class="section-label">// Experience</div>
-      <h2 class="section-title">Where I've built.</h2>
+      <h2 class="section-title">8 years at Sonos.</h2>
+      <p class="section-subtitle">From technical support to engineering infrastructure — I grew through the company, solving progressively harder problems at larger scale.</p>
     </div>
 
-    <div class="experience-timeline">
-      <div class="experience-item reveal reveal-delay-1">
+    <div class="experience-progression">
+      <div class="experience-role-block reveal reveal-delay-1">
         <div class="experience-dates">2019 — 2023</div>
-        <h3 class="experience-company">Sonos</h3>
         <div class="experience-role">Build & Automation Engineer</div>
         <p class="experience-desc">Owned CI/CD infrastructure serving Sonos engineering across frontend and backend systems. Reduced build failure rates from 30% to 3% and cut build times by 77%, directly accelerating release velocity across hardware and software product lines. Designed pipelines, testing frameworks, and automation tooling at production scale. Mentored engineers across multiple teams on build systems, testing strategy, and DevOps best practices.</p>
         <div class="experience-tech">
@@ -1836,9 +1805,8 @@ footer {
         </div>
       </div>
 
-      <div class="experience-item reveal reveal-delay-2">
+      <div class="experience-role-block reveal reveal-delay-2">
         <div class="experience-dates">2015 — 2019</div>
-        <h3 class="experience-company">Sonos</h3>
         <div class="experience-role">Technical Support Engineer & Team Lead</div>
         <p class="experience-desc">Led technical support teams of 3–10 engineers, building escalation workflows and developing diagnostic tools for troubleshooting complex network interference issues across Sonos's connected device ecosystem. Bridged the gap between customer-facing support and engineering, translating field data into actionable improvements for product teams.</p>
         <div class="experience-tech">
@@ -1849,8 +1817,6 @@ footer {
           <span class="tech-pill">Cross-Functional Collaboration</span>
         </div>
       </div>
-
-
     </div>
   </div>
 </section>
