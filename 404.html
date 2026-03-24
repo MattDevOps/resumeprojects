@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050505">
+<title>404 — Page Not Found</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --green: #76B900;
+  --green-dim: #4a7a00;
+  --green-glow: rgba(118, 185, 0, 0.3);
+  --cyan: #00d4aa;
+  --bg-deep: #050505;
+  --border: rgba(255,255,255,0.06);
+  --border-hover: rgba(118, 185, 0, 0.3);
+  --text: #e8e8e8;
+  --text-dim: #888;
+}
+
+html {
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Noise texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 10;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+.container {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  padding: 2rem;
+}
+
+.error-code {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: clamp(8rem, 20vw, 14rem);
+  line-height: 1;
+  color: var(--text);
+  text-shadow: 0 0 60px var(--green-glow), 0 0 120px rgba(118, 185, 0, 0.1);
+  margin-bottom: 1.5rem;
+  user-select: none;
+}
+
+.subtitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-weight: 400;
+  color: var(--text-dim);
+  margin-bottom: 3rem;
+  letter-spacing: 0.3px;
+}
+
+.back-link {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--green);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 14px 32px;
+  border: 1px solid var(--green-dim);
+  border-radius: 8px;
+  background: transparent;
+  transition: border-color 0.3s, box-shadow 0.3s, color 0.3s;
+}
+
+.back-link:hover {
+  border-color: var(--green);
+  box-shadow: 0 0 20px rgba(118, 185, 0, 0.15), inset 0 0 20px rgba(118, 185, 0, 0.03);
+  color: #fff;
+}
+
+.back-link:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+
+/* Subtle radial glow behind the 404 */
+.glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(118, 185, 0, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="container">
+    <h1 class="error-code">404</h1>
+    <p class="subtitle">This page doesn't exist.</p>
+    <a href="/" class="back-link">Back to Home</a>
+  </div>
+</body>
+</html>

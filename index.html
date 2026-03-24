@@ -11,6 +11,7 @@
   gtag('config', 'G-04JKVYTYF3');
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050505">
 <title>Matt Hasson — Engineering Leader & AI-Augmented Builder</title>
 <meta name="description" content="Portfolio of Matt Hasson — Full-stack engineer shipping production apps at 10x speed with AI augmentation. 8 production projects. From mobile to infra.">
 <meta property="og:title" content="Matt Hasson — Engineering Leader & AI-Augmented Builder">
@@ -565,6 +566,43 @@ section {
   gap: 6px;
 }
 
+/* ═══ PROJECT FILTERS ═══ */
+.project-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.filter-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.02);
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.filter-btn:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.filter-btn.active {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(118,185,0,0.1);
+  box-shadow: 0 0 12px rgba(118,185,0,0.08);
+}
+
+.project-card.filter-hidden {
+  display: none;
+}
+
 /* ═══ PROJECTS ═══ */
 .projects-grid {
   display: grid;
@@ -936,6 +974,241 @@ section {
   font-size: 14px;
   color: var(--text-dim);
   line-height: 1.7;
+}
+
+/* ═══ CASE STUDIES ═══ */
+.case-studies-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 48px;
+}
+
+.case-study {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.case-study:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-card-hover);
+}
+
+.case-study-header {
+  padding: 32px 32px 0;
+}
+
+.case-study-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--cyan);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.case-study-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+
+.case-study-tagline {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 24px;
+}
+
+.case-study-body {
+  padding: 0 32px 32px;
+}
+
+.case-study-section {
+  margin-bottom: 20px;
+}
+
+.case-study-section:last-child {
+  margin-bottom: 0;
+}
+
+.case-study-section-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--green);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.case-study-section p {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+.case-study-metrics {
+  display: flex;
+  gap: 24px;
+  padding: 20px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin: 20px 0;
+}
+
+.case-study-metric {
+  text-align: center;
+  flex: 1;
+}
+
+.case-study-metric-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  color: var(--green);
+  font-weight: 600;
+}
+
+.case-study-metric-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ═══ TESTIMONIALS ═══ */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.testimonial {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  padding: 32px;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.testimonial:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-card-hover);
+}
+
+.testimonial-quote {
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.7;
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.testimonial-quote::before {
+  content: '\201C';
+  font-family: 'Instrument Serif', serif;
+  font-size: 48px;
+  color: var(--green);
+  opacity: 0.3;
+  position: absolute;
+  top: 16px;
+  left: 24px;
+  line-height: 1;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.testimonial-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(118,185,0,0.1);
+  border: 1px solid rgba(118,185,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--green);
+  font-weight: 600;
+}
+
+.testimonial-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.testimonial-role {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ═══ WRITING ═══ */
+.writing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.writing-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  padding: 32px;
+  transition: all 0.3s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.writing-card:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+}
+
+.writing-card-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--cyan);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.writing-card-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.writing-card-excerpt {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+.writing-card-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .case-studies-grid { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .writing-grid { grid-template-columns: 1fr; }
 }
 
 /* ═══ CONTACT ═══ */
@@ -1602,6 +1875,7 @@ footer {
     <li><a href="#projects">Projects</a></li>
     <li><a href="#stack">Stack</a></li>
     <li><a href="#contact">Contact</a></li>
+    <li><a href="#writing">Writing</a></li>
     <li><a href="https://github.com/MattDevOps" target="_blank" rel="noopener">GitHub</a></li>
     <li><a href="https://www.linkedin.com/in/matthew-hasson/" target="_blank" rel="noopener">LinkedIn</a></li>
   </ul>
@@ -1627,6 +1901,10 @@ footer {
         <div class="hero-stat-label">For Hire</div>
       </div>
     </div>
+    <a href="/resume" class="hero-resume-link" style="display:inline-flex;align-items:center;gap:8px;margin-top:24px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green);text-decoration:none;letter-spacing:1px;text-transform:uppercase;border:1px solid rgba(118,185,0,0.3);padding:10px 20px;border-radius:6px;background:rgba(118,185,0,0.05);transition:all 0.3s;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download Resume
+    </a>
   </div>
   <div class="scroll-indicator">
     <span>Scroll</span>
@@ -1718,11 +1996,20 @@ footer {
       <div class="section-label">// Projects</div>
       <h2 class="section-title">Shipped &amp; deployed.</h2>
       <p class="section-subtitle">Production applications solving real problems — from financial analytics to mobile habit tracking to business operations.</p>
+      <div class="project-filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="react">React</button>
+        <button class="filter-btn" data-filter="python">Python</button>
+        <button class="filter-btn" data-filter="nextjs">Next.js</button>
+        <button class="filter-btn" data-filter="mobile">Mobile</button>
+        <button class="filter-btn" data-filter="ai">AI/ML</button>
+        <button class="filter-btn" data-filter="payments">Payments</button>
+      </div>
     </div>
 
     <!-- InsightTrader -->
     <div class="projects-grid">
-      <div class="project-card reveal reveal-delay-1">
+      <div class="project-card reveal reveal-delay-1" data-tech="react nextjs python ai payments">
         <div class="project-visual">
           <div class="carousel-container" data-carousel>
             <div class="carousel-slide active"><img src="screenshots/insighttrader-dashboard.png" alt="InsightTrader Dashboard" loading="lazy"></div>
@@ -1762,7 +2049,7 @@ footer {
       </div>
 
       <!-- Habify -->
-      <div class="project-card reverse reveal reveal-delay-1">
+      <div class="project-card reverse reveal reveal-delay-1" data-tech="react mobile python ai payments">
         <div class="project-visual">
           <div class="carousel-container" data-carousel>
             <div class="carousel-slide active"><img src="screenshots/habify-momentum.png" alt="Habify Momentum" loading="lazy"></div>
@@ -1801,7 +2088,7 @@ footer {
       </div>
 
       <!-- West Roxbury Framing -->
-      <div class="project-card reveal reveal-delay-1">
+      <div class="project-card reveal reveal-delay-1" data-tech="react nextjs payments">
         <div class="project-visual">
           <div class="carousel-container" data-carousel>
             <div class="carousel-slide active"><img src="screenshots/westrox-gallery1.webp" alt="West Roxbury Framing" loading="lazy"></div>
@@ -1838,7 +2125,7 @@ footer {
       </div>
 
       <!-- SecureChat -->
-      <div class="project-card reverse reveal reveal-delay-1">
+      <div class="project-card reverse reveal reveal-delay-1" data-tech="mobile python">
         <div class="project-visual">
           <div class="project-icon-visual">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1866,7 +2153,7 @@ footer {
       </div>
 
       <!-- Strategy Reality Check -->
-      <div class="project-card reveal reveal-delay-1">
+      <div class="project-card reveal reveal-delay-1" data-tech="react nextjs">
         <div class="project-visual">
           <div class="carousel-container" data-carousel>
             <div class="carousel-slide active"><img src="screenshots/strategychecker-frontpage.png" alt="Strategy Reality Check" loading="lazy"></div>
@@ -1897,7 +2184,7 @@ footer {
       </div>
 
       <!-- CarCompare -->
-      <div class="project-card reverse reveal reveal-delay-1">
+      <div class="project-card reverse reveal reveal-delay-1" data-tech="">
         <div class="project-visual">
           <div class="carousel-container" data-carousel>
             <div class="carousel-slide active"><img src="screenshots/carcompare-frontpage.png" alt="CarCompare" loading="lazy"></div>
@@ -1925,7 +2212,7 @@ footer {
         </div>
       </div>
       <!-- Hebrew Teacher -->
-      <div class="project-card reveal reveal-delay-1">
+      <div class="project-card reveal reveal-delay-1" data-tech="python ai">
         <div class="project-visual">
           <div class="project-icon-visual" style="flex-direction: column; gap: 0;">
             <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg" style="width: 65%; height: auto; opacity: 0.85;">
@@ -1959,7 +2246,7 @@ footer {
         </div>
       </div>
       <!-- PolyBot -->
-      <div class="project-card reverse reveal reveal-delay-1">
+      <div class="project-card reverse reveal reveal-delay-1" data-tech="python ai">
         <div class="project-visual">
           <div class="carousel-container" data-carousel>
             <div class="carousel-slide active"><img src="screenshots/polybot-dashboard.png" alt="PolyBot Alpha Terminal Dashboard" loading="lazy"></div>
@@ -2116,6 +2403,181 @@ footer {
         <span class="ai-card-icon">🔁</span>
         <h3 class="ai-card-title">Full Lifecycle Integration</h3>
         <p class="ai-card-text">Schema design, API architecture, frontend, payments, testing, deployment — I've integrated AI tooling across every phase. This isn't theoretical; it's a workflow I've refined across 8 production launches and 50+ technologies.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CASE STUDIES ═══ -->
+<section id="case-studies">
+  <div class="section-container">
+    <div class="reveal">
+      <div class="section-label">// Deep Dives</div>
+      <h2 class="section-title">Case studies.</h2>
+      <p class="section-subtitle">A closer look at the engineering decisions, tradeoffs, and results behind two key projects.</p>
+    </div>
+
+    <div class="case-studies-grid">
+      <div class="case-study reveal reveal-delay-1">
+        <div class="case-study-header">
+          <div class="case-study-label">Case Study</div>
+          <h3 class="case-study-name">InsightTrader</h3>
+          <div class="case-study-tagline">Trading Journal & Analytics Platform</div>
+        </div>
+        <div class="case-study-body">
+          <div class="case-study-section">
+            <div class="case-study-section-title">Problem</div>
+            <p>Existing trading journals were either too simple (spreadsheets) or too expensive and bloated. Traders needed a tool that could ingest data from any broker, reconstruct complex multi-leg trades, and provide genuine statistical insight — not just pretty charts.</p>
+          </div>
+          <div class="case-study-metrics">
+            <div class="case-study-metric">
+              <div class="case-study-metric-num">12+</div>
+              <div class="case-study-metric-label">Broker Integrations</div>
+            </div>
+            <div class="case-study-metric">
+              <div class="case-study-metric-num">10K</div>
+              <div class="case-study-metric-label">Monte Carlo Sims</div>
+            </div>
+            <div class="case-study-metric">
+              <div class="case-study-metric-num">Solo</div>
+              <div class="case-study-metric-label">Full-Stack Build</div>
+            </div>
+          </div>
+          <div class="case-study-section">
+            <div class="case-study-section-title">Approach</div>
+            <p>Built a monorepo architecture with a Next.js 15 frontend and FastAPI backend. Designed a universal CSV parser that normalizes data across 12+ broker formats. Implemented a trade reconstruction engine that handles splits, merges, and partial fills. Added AI-powered analysis using both OpenAI and Anthropic for trade coaching.</p>
+          </div>
+          <div class="case-study-section">
+            <div class="case-study-section-title">Results</div>
+            <p>Live at insighttrader.io with active users and Stripe subscriptions. The Monte Carlo simulation engine processes 10,000 iterations in under 2 seconds. Users can import their entire trading history and get statistical analysis of their edge within minutes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="case-study reveal reveal-delay-2">
+        <div class="case-study-header">
+          <div class="case-study-label">Case Study</div>
+          <h3 class="case-study-name">Habify</h3>
+          <div class="case-study-tagline">AI-Powered Habit Tracker</div>
+        </div>
+        <div class="case-study-body">
+          <div class="case-study-section">
+            <div class="case-study-section-title">Problem</div>
+            <p>Streak-based habit trackers punish users for missing a single day, destroying motivation. The psychology literature shows that momentum — not perfection — drives lasting behavior change. No app on the market implemented this insight.</p>
+          </div>
+          <div class="case-study-metrics">
+            <div class="case-study-metric">
+              <div class="case-study-metric-num">Live</div>
+              <div class="case-study-metric-label">Google Play Store</div>
+            </div>
+            <div class="case-study-metric">
+              <div class="case-study-metric-num">AI</div>
+              <div class="case-study-metric-label">Coaching Engine</div>
+            </div>
+            <div class="case-study-metric">
+              <div class="case-study-metric-num">XP</div>
+              <div class="case-study-metric-label">Gamification System</div>
+            </div>
+          </div>
+          <div class="case-study-section">
+            <div class="case-study-section-title">Approach</div>
+            <p>Designed a physics-inspired momentum engine that calculates habit strength based on consistency, recency, and frequency — not binary streaks. Built with React Native + Expo for cross-platform, FastAPI backend with Supabase, and an AI coaching system using GPT-4 that adapts to each user's patterns.</p>
+          </div>
+          <div class="case-study-section">
+            <div class="case-study-section-title">Results</div>
+            <p>Published on the Google Play Store with monetization via RevenueCat. The momentum system reduced user churn from missed days by reframing progress. Gamification layer (XP, levels, badges) drives daily engagement. AI coach provides personalized suggestions based on completion history.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ═══ -->
+<section id="testimonials">
+  <div class="section-container">
+    <div class="reveal">
+      <div class="section-label">// Testimonials</div>
+      <h2 class="section-title">What people say.</h2>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial reveal reveal-delay-1">
+        <p class="testimonial-quote">Matt's ability to take a complex problem and ship a working solution fast is remarkable. He built our entire business management system — orders, payments, CRM, notifications — and it just works. Every day.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">WR</div>
+          <div>
+            <div class="testimonial-name">West Roxbury Framing</div>
+            <div class="testimonial-role">Client — Business Management Platform</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial reveal reveal-delay-2">
+        <p class="testimonial-quote">When Matt owned CI/CD at Sonos, build failure rates dropped from 30% to 3%. He didn't just fix the pipeline — he transformed how the entire engineering org thought about build reliability.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">S</div>
+          <div>
+            <div class="testimonial-name">Engineering Colleague</div>
+            <div class="testimonial-role">Sonos — Build & Infrastructure</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial reveal reveal-delay-3">
+        <p class="testimonial-quote">The trading journal Matt built handles edge cases I didn't even know existed — multi-leg options, partial fills, broker-specific quirks. It actually understands how real traders work.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">IT</div>
+          <div>
+            <div class="testimonial-name">InsightTrader User</div>
+            <div class="testimonial-role">Active Trader — Beta Tester</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial reveal reveal-delay-4">
+        <p class="testimonial-quote">Matt mentored our team on testing strategy and CI/CD best practices for over 5 years. He has a rare combination of deep technical knowledge and the patience to teach it effectively.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">S</div>
+          <div>
+            <div class="testimonial-name">Mentee</div>
+            <div class="testimonial-role">Sonos — Software Engineer</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WRITING ═══ -->
+<section id="writing">
+  <div class="section-container">
+    <div class="reveal">
+      <div class="section-label">// Writing</div>
+      <h2 class="section-title">Thinking out loud.</h2>
+      <p class="section-subtitle">Notes on building software, using AI effectively, and shipping fast as a solo engineer.</p>
+    </div>
+
+    <div class="writing-grid">
+      <div class="writing-card reveal reveal-delay-1">
+        <div class="writing-card-tag">AI Engineering</div>
+        <h3 class="writing-card-title">The Real AI-Augmented Workflow</h3>
+        <p class="writing-card-excerpt">Everyone says they use AI to code. Here's what it actually looks like across 8 production launches — the parts that work, the parts that don't, and why engineering judgment still matters more than prompt quality.</p>
+        <div class="writing-card-date">Coming Soon</div>
+      </div>
+
+      <div class="writing-card reveal reveal-delay-2">
+        <div class="writing-card-tag">Shipping</div>
+        <h3 class="writing-card-title">From Sonos to Solo: What Changes</h3>
+        <p class="writing-card-excerpt">8 years at a hardware company taught me how to build systems. Going solo taught me how to ship products. The skills overlap less than you'd think — here's what I had to unlearn.</p>
+        <div class="writing-card-date">Coming Soon</div>
+      </div>
+
+      <div class="writing-card reveal reveal-delay-3">
+        <div class="writing-card-tag">Architecture</div>
+        <h3 class="writing-card-title">Why I Keep Choosing FastAPI + Next.js</h3>
+        <p class="writing-card-excerpt">After shipping 8 apps across different stacks, I keep coming back to the same core combo. Not because it's trendy — because it lets a solo developer move at the speed of a small team.</p>
+        <div class="writing-card-date">Coming Soon</div>
       </div>
     </div>
   </div>
@@ -2706,6 +3168,34 @@ document.addEventListener('click', (e) => {
   }
 });
 
+// ═══ PROJECT FILTERS ═══
+(function() {
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const projectCards = document.querySelectorAll('.project-card');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      projectCards.forEach(card => {
+        if (filter === 'all') {
+          card.classList.remove('filter-hidden');
+        } else {
+          const techs = (card.dataset.tech || '').split(' ');
+          card.classList.toggle('filter-hidden', !techs.includes(filter));
+        }
+      });
+
+      if (typeof gtag === 'function') {
+        gtag('event', 'project_filter', { filter_value: filter });
+      }
+    });
+  });
+})();
+
 // ═══ CAROUSELS ═══
 document.querySelectorAll('[data-carousel]').forEach(carousel => {
   const slides = carousel.querySelectorAll('.carousel-slide');
@@ -3110,6 +3600,9 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
     { id: 'projects',   points: 25, text: 'Viewed projects' },
     { id: 'stack',      points: 15, text: 'Saw the stack' },
     { id: 'ai-section', points: 20, text: 'AI philosophy' },
+    { id: 'case-studies', points: 25, text: 'Read case studies' },
+    { id: 'testimonials', points: 15, text: 'Saw testimonials' },
+    { id: 'writing',     points: 15, text: 'Found the blog' },
     { id: 'contact',    points: 50, text: 'Reached contact!' }
   ];
 

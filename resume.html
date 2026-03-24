@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matthew Hasson — Resume</title>
+<meta name="description" content="Resume of Matthew Hasson — Engineering Leader & AI-Augmented Builder. 11+ years in tech, 8 production apps shipped solo.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --green: #76B900;
+  --green-dark: #5a8f00;
+  --green-light: #8ed600;
+  --cyan: #00d4aa;
+  --bg-deep: #050505;
+  --bg-header: #0a0a0f;
+  --text-dark: #1a1a1a;
+  --text-body: #2d2d2d;
+  --text-muted: #666;
+  --text-light: #e8e8e8;
+  --border-light: #e0e0e0;
+  --paper-bg: #ffffff;
+  --accent: var(--green);
+}
+
+/* ─── BASE (Print-first) ─── */
+
+html {
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.45;
+  color: var(--text-body);
+  background: var(--paper-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a { color: var(--green-dark); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.resume-actions { display: none; }
+
+/* ─── HEADER ─── */
+
+.resume-header {
+  background: var(--bg-header);
+  color: var(--text-light);
+  padding: 22pt 28pt 18pt;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16pt;
+}
+
+.header-name {
+  font-size: 22pt;
+  font-weight: 700;
+  letter-spacing: -0.5pt;
+  color: #fff;
+  line-height: 1.15;
+}
+
+.header-title {
+  font-size: 10.5pt;
+  font-weight: 400;
+  color: var(--green);
+  margin-top: 3pt;
+  letter-spacing: 0.3pt;
+}
+
+.header-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6pt 18pt;
+  margin-top: 12pt;
+  font-size: 8.5pt;
+  color: #b0b0b0;
+}
+
+.header-contact a { color: #ccc; }
+.header-contact a:hover { color: var(--green); }
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 4pt;
+}
+
+.contact-item svg {
+  width: 11pt;
+  height: 11pt;
+  flex-shrink: 0;
+  fill: var(--green);
+}
+
+/* ─── BODY LAYOUT ─── */
+
+.resume-body {
+  display: grid;
+  grid-template-columns: 1fr 190pt;
+  gap: 0;
+  max-width: 100%;
+}
+
+.main-col {
+  padding: 18pt 22pt 18pt 28pt;
+  border-right: 1pt solid var(--border-light);
+}
+
+.side-col {
+  padding: 18pt 28pt 18pt 18pt;
+}
+
+/* ─── SECTIONS ─── */
+
+.section { margin-bottom: 16pt; }
+.section:last-child { margin-bottom: 0; }
+
+.section-title {
+  font-size: 10pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2pt;
+  color: var(--green-dark);
+  border-bottom: 1.5pt solid var(--green);
+  padding-bottom: 4pt;
+  margin-bottom: 10pt;
+}
+
+/* ─── SUMMARY ─── */
+
+.summary-text {
+  font-size: 10pt;
+  line-height: 1.55;
+  color: var(--text-body);
+}
+
+/* ─── EXPERIENCE ─── */
+
+.exp-item { margin-bottom: 14pt; }
+.exp-item:last-child { margin-bottom: 0; }
+
+.exp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2pt 8pt;
+  margin-bottom: 3pt;
+}
+
+.exp-role {
+  font-size: 10.5pt;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.exp-company {
+  color: var(--green-dark);
+  font-weight: 600;
+}
+
+.exp-dates {
+  font-size: 8.5pt;
+  color: var(--text-muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.exp-bullets {
+  list-style: none;
+  padding-left: 0;
+}
+
+.exp-bullets li {
+  position: relative;
+  padding-left: 12pt;
+  margin-bottom: 2.5pt;
+  font-size: 9.5pt;
+  line-height: 1.5;
+  color: var(--text-body);
+}
+
+.exp-bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 5.5pt;
+  width: 4pt;
+  height: 4pt;
+  border-radius: 50%;
+  background: var(--green);
+}
+
+/* ─── PROJECTS ─── */
+
+.project-item {
+  margin-bottom: 9pt;
+  padding-bottom: 9pt;
+  border-bottom: 0.5pt solid #eee;
+}
+.project-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+.project-name {
+  font-size: 9.5pt;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.project-dash {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.project-desc {
+  font-size: 8.5pt;
+  color: var(--text-muted);
+  margin-top: 1pt;
+  line-height: 1.45;
+}
+
+.project-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3pt;
+  margin-top: 4pt;
+}
+
+.tech-tag {
+  font-size: 7pt;
+  font-weight: 600;
+  padding: 1.5pt 5pt;
+  border-radius: 3pt;
+  background: #f0f7e4;
+  color: var(--green-dark);
+  border: 0.5pt solid #d4e8b0;
+  white-space: nowrap;
+}
+
+/* ─── SIDEBAR SKILLS ─── */
+
+.skill-group { margin-bottom: 12pt; }
+.skill-group:last-child { margin-bottom: 0; }
+
+.skill-label {
+  font-size: 8pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8pt;
+  color: var(--green-dark);
+  margin-bottom: 4pt;
+}
+
+.skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3pt;
+}
+
+.skill-tag {
+  font-size: 8pt;
+  padding: 2pt 6pt;
+  border-radius: 3pt;
+  background: #f5f5f5;
+  color: var(--text-body);
+  border: 0.5pt solid #ddd;
+}
+
+/* ─── SIDEBAR HIGHLIGHTS ─── */
+
+.highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6pt;
+  margin-bottom: 8pt;
+}
+.highlight-item:last-child { margin-bottom: 0; }
+
+.highlight-icon {
+  flex-shrink: 0;
+  width: 16pt;
+  height: 16pt;
+  border-radius: 4pt;
+  background: #f0f7e4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1pt;
+}
+
+.highlight-icon svg {
+  width: 10pt;
+  height: 10pt;
+  fill: var(--green-dark);
+}
+
+.highlight-text {
+  font-size: 8.5pt;
+  line-height: 1.4;
+  color: var(--text-body);
+}
+
+.highlight-text strong {
+  color: var(--text-dark);
+}
+
+/* ─── EDUCATION ─── */
+
+.edu-item { margin-bottom: 6pt; }
+
+.edu-school {
+  font-size: 9pt;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.edu-detail {
+  font-size: 8.5pt;
+  color: var(--text-muted);
+}
+
+/* ────────────────────────────────────────
+   PRINT STYLES
+   ──────────────────────────────────────── */
+
+@media print {
+  @page {
+    size: Letter;
+    margin: 0;
+  }
+
+  html, body {
+    background: #fff !important;
+    color: var(--text-body) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .resume-actions { display: none !important; }
+  .screen-bg { background: none !important; padding: 0 !important; min-height: auto !important; }
+  .resume-paper { box-shadow: none !important; border-radius: 0 !important; max-width: 100% !important; margin: 0 !important; }
+
+  .resume-header {
+    background: var(--bg-header) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .tech-tag, .skill-tag {
+    background: #f0f7e4 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .highlight-icon {
+    background: #f0f7e4 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .exp-bullets li::before {
+    background: var(--green) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .section { break-inside: avoid; }
+  .exp-item { break-inside: avoid; }
+  .project-item { break-inside: avoid; }
+
+  a { color: var(--green-dark) !important; }
+  a[href]::after { content: none !important; }
+}
+
+/* ────────────────────────────────────────
+   SCREEN STYLES
+   ──────────────────────────────────────── */
+
+@media screen {
+  .screen-bg {
+    background: var(--bg-deep);
+    min-height: 100vh;
+    padding: 32pt 16pt 64pt;
+  }
+
+  .resume-paper {
+    max-width: 8.5in;
+    margin: 0 auto;
+    background: var(--paper-bg);
+    box-shadow:
+      0 2px 8px rgba(0,0,0,0.3),
+      0 12px 40px rgba(0,0,0,0.5),
+      0 0 0 1px rgba(255,255,255,0.05);
+    border-radius: 4pt;
+    overflow: hidden;
+  }
+
+  .resume-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12pt;
+    padding: 20pt 16pt 8pt;
+  }
+
+  .btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6pt;
+    padding: 10pt 22pt;
+    border-radius: 8pt;
+    font-size: 10pt;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+  }
+
+  .btn-action svg {
+    width: 14pt;
+    height: 14pt;
+  }
+
+  .btn-print {
+    background: var(--green);
+    color: #fff;
+  }
+  .btn-print:hover {
+    background: var(--green-light);
+    text-decoration: none;
+    transform: translateY(-1pt);
+    box-shadow: 0 4pt 16pt rgba(118,185,0,0.35);
+  }
+
+  .btn-back {
+    background: rgba(255,255,255,0.08);
+    color: #ccc;
+    border: 1pt solid rgba(255,255,255,0.12);
+  }
+  .btn-back:hover {
+    background: rgba(255,255,255,0.14);
+    color: #fff;
+    text-decoration: none;
+    transform: translateY(-1pt);
+  }
+
+  .header-contact a:hover { text-decoration: underline; }
+}
+</style>
+</head>
+<body>
+
+<div class="screen-bg">
+
+  <!-- ACTION BUTTONS (screen only) -->
+  <div class="resume-actions">
+    <button class="btn-action btn-print" onclick="window.print()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+      Download PDF
+    </button>
+    <a href="/" class="btn-action btn-back">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      Back to Portfolio
+    </a>
+  </div>
+
+  <!-- RESUME PAPER -->
+  <div class="resume-paper">
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="resume-header">
+      <div class="header-top">
+        <div>
+          <div class="header-name">Matthew Hasson</div>
+          <div class="header-title">Engineering Leader &amp; AI-Augmented Builder</div>
+        </div>
+      </div>
+      <div class="header-contact">
+        <span class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Jerusalem, Israel
+        </span>
+        <span class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          <a href="mailto:matthew.hasson93@gmail.com">matthew.hasson93@gmail.com</a>
+        </span>
+        <span class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.15 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+          +1 (617) 595-5553 | +972 53-280-3041
+        </span>
+        <span class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg>
+          <a href="https://matthasson.com">matthasson.com</a>
+        </span>
+        <span class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          <a href="https://github.com/MattDevOps">github.com/MattDevOps</a>
+        </span>
+        <span class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          <a href="https://linkedin.com/in/matthew-hasson">linkedin.com/in/matthew-hasson</a>
+        </span>
+      </div>
+    </header>
+
+    <!-- ═══ BODY ═══ -->
+    <div class="resume-body">
+
+      <!-- ─── MAIN COLUMN ─── -->
+      <div class="main-col">
+
+        <!-- SUMMARY -->
+        <div class="section">
+          <div class="section-title">Summary</div>
+          <p class="summary-text">
+            11+ years in tech &mdash; 8 years at Sonos growing from support team lead to CI/CD infrastructure engineer, then shipped 8 production applications solo using AI-augmented development. Full-stack across frontend, backend, mobile, data, and infrastructure. Uses AI as a force multiplier across every phase: design, architecture, implementation, testing, and deployment.
+          </p>
+        </div>
+
+        <!-- EXPERIENCE -->
+        <div class="section">
+          <div class="section-title">Experience</div>
+
+          <div class="exp-item">
+            <div class="exp-header">
+              <div class="exp-role">Independent Software Engineer</div>
+              <div class="exp-dates">2023 &mdash; Present</div>
+            </div>
+            <ul class="exp-bullets">
+              <li>Shipped 8 production applications solo &mdash; all live, most with paying users or real clients</li>
+              <li>Full-stack development across web (React/Next.js), mobile (React Native/Flutter), and desktop platforms</li>
+              <li>AI-augmented development workflow across every phase: design, architecture, implementation, testing, deployment</li>
+              <li>Key projects: InsightTrader (trading analytics), Habify (mobile habit tracker on Google Play), West Roxbury Framing (business management), SecureChat (E2E encrypted messaging)</li>
+            </ul>
+          </div>
+
+          <div class="exp-item">
+            <div class="exp-header">
+              <div class="exp-role">Build &amp; Automation Engineer <span class="exp-company">&mdash; Sonos</span></div>
+              <div class="exp-dates">2019 &mdash; 2023</div>
+            </div>
+            <ul class="exp-bullets">
+              <li>Owned CI/CD infrastructure serving the engineering org across frontend and backend systems</li>
+              <li>Reduced build failure rates from 30% to 3%, dramatically improving developer productivity</li>
+              <li>Cut build times by 77%, directly accelerating release velocity across all teams</li>
+              <li>Designed pipelines, testing frameworks, and automation tooling at production scale</li>
+              <li>Mentored engineers across multiple teams on build systems, testing strategy, and DevOps best practices</li>
+            </ul>
+          </div>
+
+          <div class="exp-item">
+            <div class="exp-header">
+              <div class="exp-role">Technical Support Engineer &amp; Team Lead <span class="exp-company">&mdash; Sonos</span></div>
+              <div class="exp-dates">2015 &mdash; 2019</div>
+            </div>
+            <ul class="exp-bullets">
+              <li>Led technical support teams of 3&ndash;10 engineers, managing escalations and team performance</li>
+              <li>Built escalation workflows and diagnostic tools for complex network interference issues</li>
+              <li>Bridged customer-facing support and engineering, translating field data into product improvements</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- SELECTED PROJECTS -->
+        <div class="section">
+          <div class="section-title">Selected Projects</div>
+
+          <div class="project-item">
+            <div class="project-name">InsightTrader <span class="project-dash">&mdash; Trading journal &amp; analytics platform</span></div>
+            <div class="project-desc">12+ broker integrations, Monte Carlo analysis, AI coaching. Production SaaS with Stripe billing.</div>
+            <div class="project-tech">
+              <span class="tech-tag">Next.js 15</span>
+              <span class="tech-tag">React 19</span>
+              <span class="tech-tag">FastAPI</span>
+              <span class="tech-tag">Supabase</span>
+              <span class="tech-tag">Stripe</span>
+              <span class="tech-tag">OpenAI</span>
+            </div>
+          </div>
+
+          <div class="project-item">
+            <div class="project-name">Habify <span class="project-dash">&mdash; AI-powered habit tracker (Google Play)</span></div>
+            <div class="project-desc">Momentum engine, gamification system, AI coach. Published on Google Play Store with RevenueCat billing.</div>
+            <div class="project-tech">
+              <span class="tech-tag">React Native</span>
+              <span class="tech-tag">Expo</span>
+              <span class="tech-tag">FastAPI</span>
+              <span class="tech-tag">Supabase</span>
+              <span class="tech-tag">OpenAI</span>
+            </div>
+          </div>
+
+          <div class="project-item">
+            <div class="project-name">West Roxbury Framing <span class="project-dash">&mdash; Business management suite</span></div>
+            <div class="project-desc">Order lifecycle, Kanban boards, CRM, SMS notifications. Built for a real client with Square POS integration.</div>
+            <div class="project-tech">
+              <span class="tech-tag">Next.js 16</span>
+              <span class="tech-tag">Prisma</span>
+              <span class="tech-tag">PostgreSQL</span>
+              <span class="tech-tag">Square</span>
+              <span class="tech-tag">Twilio</span>
+            </div>
+          </div>
+
+          <div class="project-item">
+            <div class="project-name">SecureChat <span class="project-dash">&mdash; E2E encrypted messaging</span></div>
+            <div class="project-desc">Forward secrecy, zero-knowledge server architecture. NaCl/libsodium cryptography with WebSocket transport.</div>
+            <div class="project-tech">
+              <span class="tech-tag">Flutter</span>
+              <span class="tech-tag">FastAPI</span>
+              <span class="tech-tag">PostgreSQL</span>
+              <span class="tech-tag">NaCl/libsodium</span>
+              <span class="tech-tag">WebSockets</span>
+            </div>
+          </div>
+
+          <div class="project-item">
+            <div class="project-name">Strategy Reality Check <span class="project-dash">&mdash; Trading strategy validator</span></div>
+            <div class="project-tech">
+              <span class="tech-tag">Next.js</span>
+              <span class="tech-tag">Neon Postgres</span>
+              <span class="tech-tag">Monte Carlo</span>
+            </div>
+          </div>
+
+          <div class="project-item">
+            <div class="project-name">CarCompare <span class="project-dash">&mdash; Vehicle comparison tool (600+ vehicles, zero deps)</span></div>
+            <div class="project-tech">
+              <span class="tech-tag">Vanilla JS</span>
+              <span class="tech-tag">47 Brands</span>
+              <span class="tech-tag">Zero Dependencies</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ─── SIDEBAR ─── -->
+      <div class="side-col">
+
+        <!-- KEY METRICS -->
+        <div class="section">
+          <div class="section-title">Key Metrics</div>
+          <div class="highlight-item">
+            <div class="highlight-icon">
+              <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            </div>
+            <div class="highlight-text"><strong>8 production apps</strong> shipped solo, all live</div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-icon">
+              <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+            </div>
+            <div class="highlight-text">Build failures <strong>30% &rarr; 3%</strong> at Sonos</div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-icon">
+              <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+            </div>
+            <div class="highlight-text">Build times cut by <strong>77%</strong></div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-icon">
+              <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            </div>
+            <div class="highlight-text"><strong>11+ years</strong> in tech, 8 at Sonos</div>
+          </div>
+        </div>
+
+        <!-- TECHNICAL SKILLS -->
+        <div class="section">
+          <div class="section-title">Technical Skills</div>
+
+          <div class="skill-group">
+            <div class="skill-label">Frontend</div>
+            <div class="skill-list">
+              <span class="skill-tag">React</span>
+              <span class="skill-tag">Next.js</span>
+              <span class="skill-tag">TypeScript</span>
+              <span class="skill-tag">Tailwind CSS</span>
+              <span class="skill-tag">React Native</span>
+              <span class="skill-tag">Expo</span>
+              <span class="skill-tag">Flutter</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-label">Backend</div>
+            <div class="skill-list">
+              <span class="skill-tag">Python</span>
+              <span class="skill-tag">FastAPI</span>
+              <span class="skill-tag">Node.js</span>
+              <span class="skill-tag">Prisma</span>
+              <span class="skill-tag">SQLAlchemy</span>
+              <span class="skill-tag">WebSockets</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-label">Data</div>
+            <div class="skill-list">
+              <span class="skill-tag">PostgreSQL</span>
+              <span class="skill-tag">Supabase</span>
+              <span class="skill-tag">Neon</span>
+              <span class="skill-tag">Redis</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-label">AI / ML</div>
+            <div class="skill-list">
+              <span class="skill-tag">OpenAI GPT-4</span>
+              <span class="skill-tag">Claude</span>
+              <span class="skill-tag">AI Pair Programming</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-label">Infrastructure</div>
+            <div class="skill-list">
+              <span class="skill-tag">Vercel</span>
+              <span class="skill-tag">Fly.io</span>
+              <span class="skill-tag">Railway</span>
+              <span class="skill-tag">Docker</span>
+              <span class="skill-tag">GitHub Actions</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-label">Integrations</div>
+            <div class="skill-list">
+              <span class="skill-tag">Stripe</span>
+              <span class="skill-tag">Square</span>
+              <span class="skill-tag">Twilio</span>
+              <span class="skill-tag">RevenueCat</span>
+              <span class="skill-tag">Postmark</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-label">Testing / Observability</div>
+            <div class="skill-list">
+              <span class="skill-tag">Playwright</span>
+              <span class="skill-tag">Pytest</span>
+              <span class="skill-tag">E2E Testing</span>
+              <span class="skill-tag">Sentry</span>
+              <span class="skill-tag">PostHog</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ADDITIONAL PROJECTS -->
+        <div class="section">
+          <div class="section-title">More Projects</div>
+          <div class="highlight-item">
+            <div class="highlight-text"><strong>Hebrew Teacher</strong> &mdash; AI language tutor with GPT-4 and spaced repetition</div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-text"><strong>PolyBot</strong> &mdash; Polymarket alpha scanner with Perplexity AI</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
