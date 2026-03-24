@@ -108,12 +108,12 @@ a:hover { text-decoration: underline; }
 }
 
 .main-col {
-  padding: 18pt 22pt 18pt 28pt;
+  padding: 16pt 22pt 14pt 28pt;
   border-right: 1pt solid var(--border-light);
 }
 
 .side-col {
-  padding: 18pt 28pt 18pt 18pt;
+  padding: 16pt 28pt 14pt 18pt;
 }
 
 /* ─── SECTIONS ─── */
@@ -331,7 +331,11 @@ a:hover { text-decoration: underline; }
 @media print {
   @page {
     size: Letter;
-    margin: 0;
+    margin: 0.35in 0 0.35in 0;
+  }
+
+  @page:first {
+    margin-top: 0;
   }
 
   html, body {
@@ -339,39 +343,88 @@ a:hover { text-decoration: underline; }
     color: var(--text-body) !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    font-size: 9.5pt;
   }
 
   .resume-actions { display: none !important; }
   .screen-bg { background: none !important; padding: 0 !important; min-height: auto !important; }
-  .resume-paper { box-shadow: none !important; border-radius: 0 !important; max-width: 100% !important; margin: 0 !important; }
+  .resume-paper { box-shadow: none !important; border-radius: 0 !important; max-width: 100% !important; margin: 0 !important; overflow: visible !important; }
 
   .resume-header {
     background: var(--bg-header) !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    padding: 16pt 24pt 14pt;
   }
 
-  .tech-tag, .skill-tag {
-    background: #f0f7e4 !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+  .header-name { font-size: 20pt; }
+  .header-contact { font-size: 8pt; gap: 4pt 14pt; margin-top: 8pt; }
+
+  .resume-body {
+    display: block;
   }
 
-  .highlight-icon {
-    background: #f0f7e4 !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+  .main-col {
+    padding: 14pt 24pt 8pt;
+    border-right: none;
   }
 
+  .side-col {
+    padding: 0 24pt 14pt;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12pt;
+  }
+
+  .side-col .section { margin-bottom: 8pt; }
+
+  .section { margin-bottom: 12pt; }
+  .section-title { margin-bottom: 6pt; padding-bottom: 3pt; font-size: 9pt; }
+
+  .exp-item { margin-bottom: 10pt; break-inside: avoid; }
+  .exp-item:last-child { margin-bottom: 0; }
+  .exp-role { font-size: 9.5pt; }
+  .exp-dates { font-size: 8pt; }
+  .exp-bullets li { font-size: 8.5pt; margin-bottom: 1.5pt; padding-left: 10pt; }
   .exp-bullets li::before {
     background: var(--green) !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    top: 4.5pt;
+    width: 3.5pt;
+    height: 3.5pt;
   }
 
-  .section { break-inside: avoid; }
-  .exp-item { break-inside: avoid; }
-  .project-item { break-inside: avoid; }
+  .summary-text { font-size: 9pt; line-height: 1.5; }
+
+  .project-item { break-inside: avoid; margin-bottom: 6pt; padding-bottom: 6pt; }
+  .project-name { font-size: 9pt; }
+  .project-desc { font-size: 8pt; }
+  .tech-tag {
+    font-size: 6.5pt;
+    background: #f0f7e4 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .skill-label { font-size: 7.5pt; }
+  .skill-tag {
+    font-size: 7.5pt;
+    background: #f5f5f5 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .highlight-item { margin-bottom: 5pt; }
+  .highlight-text { font-size: 8pt; }
+  .highlight-icon {
+    background: #f0f7e4 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    width: 14pt;
+    height: 14pt;
+  }
+  .highlight-icon svg { width: 8pt; height: 8pt; }
 
   a { color: var(--green-dark) !important; }
   a[href]::after { content: none !important; }
