@@ -21,6 +21,26 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Matt Hasson — Engineering Leader & AI-Augmented Builder">
 <meta name="twitter:description" content="8 production projects. AI-augmented development. From mobile to infrastructure.">
+<link rel="canonical" href="https://matthasson.com">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Matt Hasson",
+  "jobTitle": "Engineering Leader & AI-Augmented Builder",
+  "url": "https://matthasson.com",
+  "sameAs": [
+    "https://github.com/MattDevOps",
+    "https://www.linkedin.com/in/matthew-hasson/"
+  ],
+  "knowsAbout": ["Full-Stack Development", "AI/ML", "React", "Next.js", "Python", "DevOps", "Mobile Development"],
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Jerusalem",
+    "addressCountry": "IL"
+  }
+}
+</script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,6 +73,17 @@ html {
   color: var(--text);
   font-family: 'Space Grotesk', sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Keyboard focus outlines */
+:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: rgba(118,185,0,0.25);
+  color: #fff;
 }
 
 body {
@@ -761,6 +792,7 @@ section {
   border-color: var(--green);
   color: var(--green);
   background: rgba(118,185,0,0.05);
+  box-shadow: 0 0 12px rgba(118,185,0,0.08);
 }
 
 .project-link {
@@ -774,7 +806,10 @@ section {
   transition: gap 0.25s;
 }
 
-.project-link:hover { gap: 12px; }
+.project-link:hover {
+  gap: 12px;
+  text-shadow: 0 0 16px rgba(118,185,0,0.3);
+}
 
 .project-link svg {
   width: 16px;
@@ -959,6 +994,8 @@ section {
 .contact-item:hover {
   border-color: var(--border-hover);
   background: var(--bg-card-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -8px rgba(118,185,0,0.06);
 }
 
 .contact-item-icon {
@@ -1096,6 +1133,30 @@ section {
   background: rgba(255,107,107,0.08);
   border: 1px solid rgba(255,107,107,0.2);
 }
+
+.contact-form-input:invalid:not(:placeholder-shown),
+.contact-form-textarea:invalid:not(:placeholder-shown) {
+  border-color: rgba(255,107,107,0.4);
+}
+
+.contact-form-input:valid:not(:placeholder-shown),
+.contact-form-textarea:valid:not(:placeholder-shown) {
+  border-color: rgba(118,185,0,0.3);
+}
+
+.contact-form-submit .spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(118,185,0,0.3);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 768px) {
   .contact-grid { grid-template-columns: 1fr; gap: 32px; }
@@ -2683,7 +2744,7 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
   const form = e.target;
 
   btn.disabled = true;
-  btn.textContent = 'Sending...';
+  btn.innerHTML = '<span class="spinner"></span>Sending...';
   status.className = 'contact-form-status';
 
   try {
@@ -3115,6 +3176,107 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
     if (widgetClicks === 5) award('widget-click', 50, 'Found the easter egg');
     if (widgetClicks === 15) award('widget-obsessed', 100, 'Okay you really like clicking');
   });
+})();
+</script>
+
+<script>
+// ═══ GA4 CUSTOM EVENT TRACKING ═══
+(function() {
+  if (typeof gtag !== 'function') return;
+
+  // Track nav link clicks
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      gtag('event', 'nav_click', {
+        link_text: link.textContent.trim(),
+        link_url: link.getAttribute('href')
+      });
+    });
+  });
+
+  // Track project link clicks (Visit Live Site / GitHub)
+  document.querySelectorAll('.project-link').forEach(link => {
+    link.addEventListener('click', () => {
+      const card = link.closest('.project-card');
+      const name = card ? card.querySelector('.project-name')?.textContent : 'unknown';
+      gtag('event', 'project_click', {
+        project_name: name,
+        link_url: link.getAttribute('href')
+      });
+    });
+  });
+
+  // Track project card views (when scrolled into view)
+  const projectObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const name = entry.target.querySelector('.project-name')?.textContent;
+        if (name) {
+          gtag('event', 'project_view', { project_name: name });
+        }
+        projectObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.project-card').forEach(card => projectObserver.observe(card));
+
+  // Track section views
+  const sectionObserverGA = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        gtag('event', 'section_view', { section_name: entry.target.id });
+        sectionObserverGA.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('section[id]').forEach(s => sectionObserverGA.observe(s));
+
+  // Track contact form submission
+  const form = document.getElementById('contactForm');
+  if (form) {
+    form.addEventListener('submit', () => {
+      gtag('event', 'contact_form_submit');
+    });
+  }
+
+  // Track contact info clicks (email, phone, github, linkedin)
+  document.querySelectorAll('#contact a.contact-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const label = item.querySelector('.contact-item-label')?.textContent;
+      gtag('event', 'contact_info_click', { contact_type: label });
+    });
+  });
+
+  // Track scroll depth milestones
+  let maxScrollGA = 0;
+  const milestones = [25, 50, 75, 90];
+  const firedMilestones = new Set();
+  window.addEventListener('scroll', () => {
+    const pct = Math.round((window.scrollY + window.innerHeight) / document.body.scrollHeight * 100);
+    if (pct > maxScrollGA) maxScrollGA = pct;
+    milestones.forEach(m => {
+      if (maxScrollGA >= m && !firedMilestones.has(m)) {
+        firedMilestones.add(m);
+        gtag('event', 'scroll_depth', { percent: m });
+      }
+    });
+  }, { passive: true });
+
+  // Track CTA / "Available for Opportunities" clicks
+  const availBadge = document.querySelector('.nav-available');
+  if (availBadge) {
+    availBadge.addEventListener('click', () => {
+      gtag('event', 'cta_click', { cta_name: 'available_badge' });
+    });
+  }
+
+  // Track snake game opens
+  const snakeTrigger = document.getElementById('snakeTrigger');
+  if (snakeTrigger) {
+    snakeTrigger.addEventListener('click', () => {
+      gtag('event', 'snake_game_open');
+    });
+  }
 })();
 </script>
 
