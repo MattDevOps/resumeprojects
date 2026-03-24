@@ -916,66 +916,6 @@ section {
 .stack-item:hover { color: var(--text); }
 .stack-item:last-child { border-bottom: none; }
 
-/* ═══ AI SECTION ═══ */
-#ai-section {
-  border-top: 1px solid var(--border);
-}
-
-.ai-callout {
-  margin-top: 64px;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 32px;
-}
-
-.ai-card {
-  padding: 40px 32px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg-card);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s;
-}
-
-.ai-card:hover {
-  border-color: rgba(0,212,170,0.3);
-  background: var(--bg-card-hover);
-}
-
-.ai-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--green), var(--cyan));
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.ai-card:hover::before { opacity: 1; }
-
-.ai-card-icon {
-  font-size: 28px;
-  margin-bottom: 20px;
-  display: block;
-}
-
-.ai-card-title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: var(--text);
-}
-
-.ai-card-text {
-  font-size: 14px;
-  color: var(--text-dim);
-  line-height: 1.7;
-}
-
 /* ═══ CASE STUDIES ═══ */
 .case-studies-grid {
   display: grid;
@@ -1077,78 +1017,6 @@ section {
   margin-top: 4px;
 }
 
-/* ═══ TESTIMONIALS ═══ */
-.testimonials-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-top: 48px;
-}
-
-.testimonial {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg-card);
-  padding: 32px;
-  transition: all 0.3s;
-  position: relative;
-}
-
-.testimonial:hover {
-  border-color: var(--border-hover);
-  background: var(--bg-card-hover);
-}
-
-.testimonial-quote {
-  font-size: 15px;
-  color: var(--text);
-  line-height: 1.7;
-  font-style: italic;
-  margin-bottom: 20px;
-}
-
-.testimonial-quote::before {
-  content: '\201C';
-  font-family: 'Instrument Serif', serif;
-  font-size: 48px;
-  color: var(--green);
-  opacity: 0.3;
-  position: absolute;
-  top: 16px;
-  left: 24px;
-  line-height: 1;
-}
-
-.testimonial-author {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.testimonial-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(118,185,0,0.1);
-  border: 1px solid rgba(118,185,0,0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  color: var(--green);
-  font-weight: 600;
-}
-
-.testimonial-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.testimonial-role {
-  font-size: 12px;
-  color: var(--text-muted);
-}
 
 /* ═══ WRITING ═══ */
 .writing-grid {
@@ -1207,7 +1075,6 @@ section {
 
 @media (max-width: 768px) {
   .case-studies-grid { grid-template-columns: 1fr; }
-  .testimonials-grid { grid-template-columns: 1fr; }
   .writing-grid { grid-template-columns: 1fr; }
 }
 
@@ -1784,7 +1651,6 @@ footer {
 /* ═══ RESPONSIVE ═══ */
 @media (max-width: 1024px) {
   .stack-grid { grid-template-columns: repeat(2, 1fr); }
-  .ai-callout { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {
@@ -2379,35 +2245,6 @@ footer {
   </div>
 </section>
 
-<!-- ═══ AI SECTION ═══ -->
-<section id="ai-section">
-  <div class="section-container">
-    <div class="reveal">
-      <div class="section-label">// Methodology</div>
-      <h2 class="section-title">AI-augmented engineering.</h2>
-      <p class="section-subtitle">I've spent years developing a practical framework for integrating AI into every phase of the software development lifecycle — and I have the shipped products to prove it works.</p>
-    </div>
-
-    <div class="ai-callout">
-      <div class="ai-card reveal reveal-delay-1">
-        <span class="ai-card-icon">⚡</span>
-        <h3 class="ai-card-title">Proven Velocity</h3>
-        <p class="ai-card-text">8 production applications shipped solo using AI-augmented workflows — from architecture through deployment. I've developed repeatable processes for pairing with LLMs that compress weeks of work into days without sacrificing quality.</p>
-      </div>
-      <div class="ai-card reveal reveal-delay-2">
-        <span class="ai-card-icon">🎯</span>
-        <h3 class="ai-card-title">Engineering Judgment First</h3>
-        <p class="ai-card-text">AI accelerates execution, but architecture, tradeoffs, and shipping decisions require human judgment. I understand where AI adds leverage and where it introduces risk — the difference between prompting and engineering.</p>
-      </div>
-      <div class="ai-card reveal reveal-delay-3">
-        <span class="ai-card-icon">🔁</span>
-        <h3 class="ai-card-title">Full Lifecycle Integration</h3>
-        <p class="ai-card-text">Schema design, API architecture, frontend, payments, testing, deployment — I've integrated AI tooling across every phase. This isn't theoretical; it's a workflow I've refined across 8 production launches and 50+ technologies.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ═══ CASE STUDIES ═══ -->
 <section id="case-studies">
   <div class="section-container">
@@ -2493,61 +2330,6 @@ footer {
   </div>
 </section>
 
-<!-- ═══ TESTIMONIALS ═══ -->
-<section id="testimonials">
-  <div class="section-container">
-    <div class="reveal">
-      <div class="section-label">// Testimonials</div>
-      <h2 class="section-title">What people say.</h2>
-    </div>
-
-    <div class="testimonials-grid">
-      <div class="testimonial reveal reveal-delay-1">
-        <p class="testimonial-quote">Matt's ability to take a complex problem and ship a working solution fast is remarkable. He built our entire business management system — orders, payments, CRM, notifications — and it just works. Every day.</p>
-        <div class="testimonial-author">
-          <div class="testimonial-avatar">WR</div>
-          <div>
-            <div class="testimonial-name">West Roxbury Framing</div>
-            <div class="testimonial-role">Client — Business Management Platform</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="testimonial reveal reveal-delay-2">
-        <p class="testimonial-quote">When Matt owned CI/CD at Sonos, build failure rates dropped from 30% to 3%. He didn't just fix the pipeline — he transformed how the entire engineering org thought about build reliability.</p>
-        <div class="testimonial-author">
-          <div class="testimonial-avatar">S</div>
-          <div>
-            <div class="testimonial-name">Engineering Colleague</div>
-            <div class="testimonial-role">Sonos — Build & Infrastructure</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="testimonial reveal reveal-delay-3">
-        <p class="testimonial-quote">The trading journal Matt built handles edge cases I didn't even know existed — multi-leg options, partial fills, broker-specific quirks. It actually understands how real traders work.</p>
-        <div class="testimonial-author">
-          <div class="testimonial-avatar">IT</div>
-          <div>
-            <div class="testimonial-name">InsightTrader User</div>
-            <div class="testimonial-role">Active Trader — Beta Tester</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="testimonial reveal reveal-delay-4">
-        <p class="testimonial-quote">Matt mentored our team on testing strategy and CI/CD best practices for over 5 years. He has a rare combination of deep technical knowledge and the patience to teach it effectively.</p>
-        <div class="testimonial-author">
-          <div class="testimonial-avatar">S</div>
-          <div>
-            <div class="testimonial-name">Mentee</div>
-            <div class="testimonial-role">Sonos — Software Engineer</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- ═══ WRITING (hidden for now) ═══ -->
 <section id="writing" style="display:none">
@@ -3599,9 +3381,7 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
     { id: 'experience', points: 20, text: 'Checked experience' },
     { id: 'projects',   points: 25, text: 'Viewed projects' },
     { id: 'stack',      points: 15, text: 'Saw the stack' },
-    { id: 'ai-section', points: 20, text: 'AI philosophy' },
     { id: 'case-studies', points: 25, text: 'Read case studies' },
-    { id: 'testimonials', points: 15, text: 'Saw testimonials' },
     { id: 'writing',     points: 15, text: 'Found the blog' },
     { id: 'contact',    points: 50, text: 'Reached contact!' }
   ];
