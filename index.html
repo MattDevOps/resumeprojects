@@ -535,42 +535,6 @@ section {
   gap: 6px;
 }
 
-/* ═══ PROJECT FILTERS ═══ */
-.project-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 32px;
-}
-
-.filter-btn {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  padding: 6px 14px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  background: rgba(255,255,255,0.02);
-  letter-spacing: 0.3px;
-  cursor: pointer;
-  transition: all 0.25s;
-}
-
-.filter-btn:hover {
-  border-color: var(--green);
-  color: var(--green);
-}
-
-.filter-btn.active {
-  border-color: var(--green);
-  color: var(--green);
-  background: rgba(118,185,0,0.1);
-  box-shadow: 0 0 12px rgba(118,185,0,0.08);
-}
-
-.project-card.filter-hidden {
-  display: none;
-}
 
 /* ═══ PROJECTS ═══ */
 .projects-grid {
@@ -1789,20 +1753,11 @@ footer {
       <div class="section-label">// Projects</div>
       <h2 class="section-title">Shipped &amp; deployed.</h2>
       <p class="section-subtitle">Production applications solving real problems — from financial analytics to mobile habit tracking to business operations.</p>
-      <div class="project-filters">
-        <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="react">React</button>
-        <button class="filter-btn" data-filter="python">Python</button>
-        <button class="filter-btn" data-filter="nextjs">Next.js</button>
-        <button class="filter-btn" data-filter="mobile">Mobile</button>
-        <button class="filter-btn" data-filter="ai">AI/ML</button>
-        <button class="filter-btn" data-filter="payments">Payments</button>
-      </div>
     </div>
 
     <!-- InsightTrader -->
     <div class="projects-grid">
-      <div class="project-card reveal reveal-delay-1" data-tech="react nextjs python ai payments">
+      <div class="project-card reveal reveal-delay-1">
         <div class="project-visual">
           <div class="carousel-container" data-carousel>
             <div class="carousel-slide active"><img src="screenshots/insighttrader-dashboard.png" alt="InsightTrader Dashboard" loading="lazy"></div>
@@ -1842,7 +1797,7 @@ footer {
       </div>
 
       <!-- Habify -->
-      <div class="project-card reverse reveal reveal-delay-1" data-tech="react mobile python ai payments">
+      <div class="project-card reverse reveal reveal-delay-1">
         <div class="project-visual">
           <div class="carousel-container" data-carousel>
             <div class="carousel-slide active"><img src="screenshots/habify-momentum.png" alt="Habify Momentum" loading="lazy"></div>
@@ -1881,7 +1836,7 @@ footer {
       </div>
 
       <!-- West Roxbury Framing -->
-      <div class="project-card reveal reveal-delay-1" data-tech="react nextjs payments">
+      <div class="project-card reveal reveal-delay-1">
         <div class="project-visual">
           <div class="carousel-container" data-carousel>
             <div class="carousel-slide active"><img src="screenshots/westrox-gallery1.webp" alt="West Roxbury Framing" loading="lazy"></div>
@@ -1918,7 +1873,7 @@ footer {
       </div>
 
       <!-- SecureChat -->
-      <div class="project-card reverse reveal reveal-delay-1" data-tech="mobile python">
+      <div class="project-card reverse reveal reveal-delay-1">
         <div class="project-visual">
           <div class="project-icon-visual">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1946,7 +1901,7 @@ footer {
       </div>
 
       <!-- Strategy Reality Check -->
-      <div class="project-card reveal reveal-delay-1" data-tech="react nextjs">
+      <div class="project-card reveal reveal-delay-1">
         <div class="project-visual">
           <div class="carousel-container" data-carousel>
             <div class="carousel-slide active"><img src="screenshots/strategychecker-frontpage.png" alt="Strategy Reality Check" loading="lazy"></div>
@@ -1977,7 +1932,7 @@ footer {
       </div>
 
       <!-- CarCompare -->
-      <div class="project-card reverse reveal reveal-delay-1" data-tech="">
+      <div class="project-card reverse reveal reveal-delay-1">
         <div class="project-visual">
           <div class="carousel-container" data-carousel>
             <div class="carousel-slide active"><img src="screenshots/carcompare-frontpage.png" alt="CarCompare" loading="lazy"></div>
@@ -2005,7 +1960,7 @@ footer {
         </div>
       </div>
       <!-- Hebrew Teacher -->
-      <div class="project-card reveal reveal-delay-1" data-tech="python ai">
+      <div class="project-card reveal reveal-delay-1">
         <div class="project-visual">
           <div class="project-icon-visual" style="flex-direction: column; gap: 0;">
             <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg" style="width: 65%; height: auto; opacity: 0.85;">
@@ -2039,7 +1994,7 @@ footer {
         </div>
       </div>
       <!-- PolyBot -->
-      <div class="project-card reverse reveal reveal-delay-1" data-tech="python ai">
+      <div class="project-card reverse reveal reveal-delay-1">
         <div class="project-visual">
           <div class="carousel-container" data-carousel>
             <div class="carousel-slide active"><img src="screenshots/polybot-dashboard.png" alt="PolyBot Alpha Terminal Dashboard" loading="lazy"></div>
@@ -2916,33 +2871,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// ═══ PROJECT FILTERS ═══
-(function() {
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  const projectCards = document.querySelectorAll('.project-card');
-
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const filter = btn.dataset.filter;
-
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      projectCards.forEach(card => {
-        if (filter === 'all') {
-          card.classList.remove('filter-hidden');
-        } else {
-          const techs = (card.dataset.tech || '').split(' ');
-          card.classList.toggle('filter-hidden', !techs.includes(filter));
-        }
-      });
-
-      if (typeof gtag === 'function') {
-        gtag('event', 'project_filter', { filter_value: filter });
-      }
-    });
-  });
-})();
 
 // ═══ CAROUSELS ═══
 document.querySelectorAll('[data-carousel]').forEach(carousel => {
