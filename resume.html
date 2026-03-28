@@ -504,6 +504,67 @@ a:hover { text-decoration: underline; }
   }
 
   .header-contact a:hover { text-decoration: underline; }
+
+  /* ─── MOBILE RESPONSIVE ─── */
+  @media (max-width: 680px) {
+    .screen-bg {
+      padding: 16pt 0 32pt;
+    }
+
+    .resume-paper {
+      max-width: 100%;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .resume-actions {
+      padding: 12pt 16pt 4pt;
+    }
+
+    .resume-header {
+      padding: 18pt 16pt 14pt;
+    }
+
+    .header-name {
+      font-size: 18pt;
+    }
+
+    .header-title {
+      font-size: 9.5pt;
+    }
+
+    .header-contact {
+      font-size: 8pt;
+      gap: 5pt 12pt;
+    }
+
+    .resume-body {
+      grid-template-columns: 1fr;
+    }
+
+    .main-col {
+      padding: 14pt 16pt;
+      border-right: none;
+    }
+
+    .side-col {
+      padding: 0 16pt 14pt;
+    }
+
+    .section-title {
+      font-size: 9.5pt;
+    }
+
+    .exp-header {
+      flex-direction: column;
+      gap: 1pt;
+    }
+
+    .btn-action {
+      padding: 8pt 16pt;
+      font-size: 9pt;
+    }
+  }
 }
 </style>
 </head>
